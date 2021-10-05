@@ -1,17 +1,32 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Grid/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Grid from './components/Grid.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Grid
+  },
+  methods: {
+    coding() {
+      // Do Something
+    },
+    loop() {
+      // GAME LOOP
+      requestAnimationFrame(this.loop);
+    }
+  },
+  created() {
+    this.loop();
+    window.addEventListener('keypress', this.coding);
+  },
+  destroyed() {
+    window.removeEventListener('keypress', this.coding);
   }
 }
 </script>
