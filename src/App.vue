@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     coding() {
-      // Do Something
+      this.$store.commit('shearSort');
     },
     loop() {
       // GAME LOOP

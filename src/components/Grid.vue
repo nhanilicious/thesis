@@ -1,10 +1,13 @@
 <template>
   <div class="grid">
-    <table>
-      <tr v-for="row in grid" :key="row">
-        <td v-for="cell in row" :key="cell">{{ cell }}</td>
-      </tr>
-    </table>
+    <div class="turn">{{ turn }}</div>
+    <div class="mesh">
+      <table>
+        <tr v-for="dx in values" :key="dx">
+          <td v-for="val in dx" :key="val">{{ val }}</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -12,8 +15,11 @@
 export default {
   name: "Grid",
   computed: {
-    grid() {
-      return this.$store.state.grid;
+    values() {
+      return this.$store.state.values;
+    },
+    turn() {
+      return this.$store.state.turn;
     }
   }
 }
