@@ -1,5 +1,5 @@
 <template>
-  <div class="grid">
+  <div class="gridview">
     <div class="turn">{{ turn }}</div>
     <div class="mesh">
       <table>
@@ -13,10 +13,11 @@
 
 <script>
 export default {
-  name: "Grid",
+  name: "GridView",
   computed: {
     values() {
-      return this.$store.state.values;
+      let initValues = this.$store.state.values;
+      return initValues;
     },
     turn() {
       return this.$store.state.turn;

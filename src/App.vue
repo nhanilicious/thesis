@@ -1,32 +1,16 @@
 <template>
   <div id="app">
-    <Grid/>
+    <Simulator/>
   </div>
 </template>
 
 <script>
-import Grid from './components/Grid.vue'
+import Simulator from './components/Simulator.vue'
 
 export default {
   name: 'App',
   components: {
-    Grid
-  },
-  methods: {
-    coding() {
-      this.$store.commit('shearSort');
-    },
-    loop() {
-      // GAME LOOP
-      requestAnimationFrame(this.loop);
-    }
-  },
-  created() {
-    this.loop();
-    window.addEventListener('keypress', this.coding);
-  },
-  destroyed() {
-    window.removeEventListener('keypress', this.coding);
+    Simulator
   }
 }
 </script>
