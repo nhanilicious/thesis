@@ -1,12 +1,9 @@
 <template>
   <div class="gridview">
-    <div class="turn">{{ turn }}</div>
-    <div class="mesh">
-      <table>
-        <tr v-for="dx in values" :key="dx">
-          <td v-for="val in dx" :key="val">{{ val }}</td>
-        </tr>
-      </table>
+    <div class="grid">
+      <div class="row" v-for="(dx, i) in step.grid.values" :key="i">
+        <div class="cell" v-for="(val, j) in dx" :key="j">{{ val }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -14,19 +11,29 @@
 <script>
 export default {
   name: "GridView",
-  computed: {
-    values() {
-      let initValues = this.$store.state.values;
-      return initValues;
-    },
-    turn() {
-      return this.$store.state.turn;
-    }
+  props: {
+    step: undefined
   }
 }
 
 </script>
 
 <style scoped>
+.grid {
+  display: table;
+  text-align: center;
+  width: 60%;
+  margin: 10% auto 0;
+  border-collapse: separate;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+}
 
+.row {
+  display: table-row;
+}
+
+.cell {
+  display: table-cell;
+}
 </style>

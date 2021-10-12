@@ -6,7 +6,6 @@ import Step from "@/components/util/Step"
 export default class ShearSort extends BaseSort {
 
     static dimension = 2;
-    static id = "shear_sort";
     static name = "Shear Sort";
 
     static initStep(grid) {
@@ -61,7 +60,7 @@ export default class ShearSort extends BaseSort {
                     else
                         return new Step(grid, [1, iter + 1], 0, highlights);
                 else
-                    return new Step(grid, [1, iter], turn + 1, highlights);
+                    return new Step(grid, [2, iter], turn + 1, highlights);
 
             case 3:
             default:

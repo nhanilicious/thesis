@@ -1,7 +1,6 @@
 export default class BaseSort {
 
     static dimension = -1;
-    static id = "base_sort";
     static name = "BaseSort";
 
     static initStep() {
