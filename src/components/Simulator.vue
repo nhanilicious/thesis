@@ -68,7 +68,6 @@ export default {
   methods: {
     onEmitStep: function (step) {
       this.step = step;
-      console.log(this.step);
     }
   }
 }
