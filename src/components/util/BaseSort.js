@@ -15,4 +15,8 @@ export default class BaseSort {
 
     }
 
+    static numeralCompare(a, b) {
+        return a - b;
+    }
+
 }

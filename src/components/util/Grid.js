@@ -33,7 +33,7 @@ export default class Grid {
             vs = tvs;
         }
 
-        if (height > 1) {
+        {
             let tvs = [];
             while (vs.length) tvs.push(vs.splice(0, width));
             vs = tvs;
