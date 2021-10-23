@@ -22,10 +22,14 @@ export default class Grid {
             [vs[idx], vs[rnd]] = [vs[rnd], vs[idx]];
         }
 
-        if (n > size) {
+        if (n >= size) {
             let [tvs, d0, d1, r] = [[], Math.floor(n / size), Math.ceil(n / size), n % size];
             for (let i = 0; i < r; ++i) tvs.push(vs.splice(0, d1));
             for (let i = r; i < size; ++i) tvs.push(vs.length ? vs.splice(0, d0) : []);
+            vs = tvs;
+        } else {
+            let tvs = Array.from(vs, (_, i) => [i]);
+            for (let i = tvs.length; i < size; ++i) tvs.push([]);
             vs = tvs;
         }
 

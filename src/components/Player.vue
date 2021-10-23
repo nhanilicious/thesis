@@ -65,7 +65,7 @@ export default {
 
         let nextGrid = this.algorithm.nextStep(this.grid);
         let timeout = 0;
-        while (nextGrid != null && timeout++ < this.n ^ 2) {
+        while (nextGrid != null && timeout++ < 2 * this.width * this.height) {
           this.steps.push(nextGrid);
           nextGrid = this.algorithm.nextStep(nextGrid);
         }
@@ -89,6 +89,7 @@ export default {
     }
   },
   created: function () {
+    this.calc();
     this.init();
   }
 }

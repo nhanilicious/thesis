@@ -23,18 +23,39 @@ export default class ShearSort extends BaseSort {
         switch (phase) {
 
             case 0:
+
+                if (grid.values[0][0].length > 1) {
+
+                    for (let i = 0; i < h; ++i)
+                        for (let j = 0; j < w; ++j) {
+                            grid.values[0][0].sort();
+                            highlights.push(new Highlight([i, j], [i, j]));
+                        }
+
+                    return new Step(grid, [1, 0]);
+
+                } else {
+
+                    return this.nextStep(new Step(grid, [1, 0]));
+
+                }
+
             case 1:
 
-                for (let i = turn % 2; i < w; i += 2)
-                    for (let j = 0; j < h; j++) {
+                for (let i = 0; i < h; ++i)
+                    for (let j = turn % 2; j < w; j += 2)
+                        if ((j + 1) < w) {
 
-                        highlights.push(new Highlight([j, i], [j, i + 1]));
+                            highlights.push(new Highlight([i, j], [i, j + 1]));
 
-                        if ((i + 1) < w)
-                            if (((j % 2) && (grid.values[j][i] < grid.values[j][i + 1])) || (!(j % 2) && (grid.values[j][i] > grid.values[j][i + 1])))
-                                [grid.values[j][i], grid.values[j][i + 1]] = [grid.values[j][i + 1], grid.values[j][i]];
+                            let arr = grid.values[i][j].concat(grid.values[i][j + 1]);
+                            arr.sort(function (a, b) {
+                                return a - b;
+                            });
+                            let tmp = arr.splice(0, Math.ceil(arr.length / 2));
+                            [grid.values[i][j], grid.values[i][j + 1]] = (i % 2) ? [arr, tmp] : [tmp, arr];
 
-                    }
+                        }
 
                 if ((turn + 1) === w)
                     return new Step(grid, [2, iter], 0, highlights);
@@ -44,15 +65,19 @@ export default class ShearSort extends BaseSort {
             case 2:
 
                 for (let i = turn % 2; i < h; i += 2)
-                    for (let j = 0; j < w; j++) {
+                    for (let j = 0; j < w; j++)
+                        if ((i + 1) < h) {
 
-                        highlights.push(new Highlight([i, j], [i + 1, j]));
+                            highlights.push(new Highlight([i, j], [i + 1, j]));
 
-                        if ((i + 1) < h)
-                            if (grid.values[i][j] > grid.values[i + 1][j])
-                                [grid.values[i][j], grid.values[i + 1][j]] = [grid.values[i + 1][j], grid.values[i][j]]
+                            let arr = grid.values[i][j].concat(grid.values[i + 1][j]);
+                            arr.sort(function (a, b) {
+                                return a - b;
+                            });
+                            let tmp = arr.splice(Math.ceil(arr.length / 2));
+                            [grid.values[i][j], grid.values[i + 1][j]] = [arr, tmp];
 
-                    }
+                        }
 
                 if ((turn + 1) === h)
                     if ((iter + 1) === Math.max(w, h))
