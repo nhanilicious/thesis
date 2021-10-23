@@ -10,13 +10,13 @@ export default class EvenOddSort extends BaseSort {
 
     static initStep(grid) {
 
-        return new Step(Grid.cloneDeep(grid), 0, 0, []);
+        return new Step(Grid.cloneDeep(grid), [0, 0]);
 
     }
 
     static nextStep(step) {
 
-        let [grid, phase, turn] = [Grid.cloneDeep(step.grid), step.phase, step.turn];
+        let [grid, [phase, turn]] = [Grid.cloneDeep(step.grid), step.state];
         const w = grid.width;
         let highlights = [];
 
@@ -31,11 +31,11 @@ export default class EvenOddSort extends BaseSort {
                         highlights.push(new Highlight([0][i], [0][i]));
                     }
 
-                    return new Step(grid, 1, 0, highlights);
+                    return new Step(grid, [1, 0], highlights);
 
                 } else {
 
-                    return this.nextStep(new Step(grid, 1));
+                    return this.nextStep(new Step(grid, [1, 0]));
 
                 }
 
@@ -53,9 +53,9 @@ export default class EvenOddSort extends BaseSort {
                 }
 
                 if ((turn + 1) === w)
-                    return new Step(grid, 2, 0, highlights);
+                    return new Step(grid, [2, 0], highlights);
                 else
-                    return new Step(grid, 1, turn + 1, highlights);
+                    return new Step(grid, [1, turn + 1], highlights);
 
             case 2:
             default:

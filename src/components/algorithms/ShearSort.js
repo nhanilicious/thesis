@@ -10,13 +10,13 @@ export default class ShearSort extends BaseSort {
 
     static initStep(grid) {
 
-        return new Step(Grid.cloneDeep(grid), [0, 0], 0, []);
+        return new Step(Grid.cloneDeep(grid), [0, 0, 0]);
 
     }
 
     static nextStep(step) {
 
-        let [grid, [phase, iter], turn] = [Grid.cloneDeep(step.grid), step.phase, step.turn];
+        let [grid, [phase, iter, turn]] = [Grid.cloneDeep(step.grid), step.state];
         const [w, h] = [grid.width, grid.height];
         let highlights = [];
 
@@ -32,11 +32,11 @@ export default class ShearSort extends BaseSort {
                             highlights.push(new Highlight([i, j], [i, j]));
                         }
 
-                    return new Step(grid, [1, 0], 0, highlights);
+                    return new Step(grid, [1, 0, 0], highlights);
 
                 } else {
 
-                    return this.nextStep(new Step(grid, [1, 0]));
+                    return this.nextStep(new Step(grid, [1, 0, 0]));
 
                 }
 
@@ -55,9 +55,9 @@ export default class ShearSort extends BaseSort {
                     }
 
                 if ((turn + 1) === w)
-                    return new Step(grid, [2, iter], 0, highlights);
+                    return new Step(grid, [2, iter, 0], highlights);
                 else
-                    return new Step(grid, [1, iter], turn + 1, highlights);
+                    return new Step(grid, [1, iter, turn + 1], highlights);
 
             case 2:
 
@@ -75,11 +75,11 @@ export default class ShearSort extends BaseSort {
 
                 if ((turn + 1) === h)
                     if ((iter + 1) === Math.max(w, h))
-                        return new Step(grid, [3, 0], 0, highlights);
+                        return new Step(grid, [3, 0, 0], highlights);
                     else
-                        return new Step(grid, [1, iter + 1], 0, highlights);
+                        return new Step(grid, [1, iter + 1, 0], highlights);
                 else
-                    return new Step(grid, [2, iter], turn + 1, highlights);
+                    return new Step(grid, [2, iter, turn + 1], highlights);
 
             case 3:
             default:
