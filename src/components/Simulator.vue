@@ -52,7 +52,7 @@ export default {
     },
     size() {
       if (this.algorithm === undefined) return undefined;
-      let [w, h] = [this.width ? this.width : 4, this.height ? this.height : 1];
+      let [w, h] = [this.width ? this.width : 1, this.height ? this.height : 1];
       switch (this.algorithm.dimension) {
         case 0:
           return [1, 1];
