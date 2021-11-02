@@ -2,18 +2,21 @@
   <div class="configurator">
     <div>
       Algorithm:
-      <select v-model="algorithm">
+      <select v-model="config.algorithm">
         <option v-for="a in algorithms" :value="a" :key="a.name">
           {{ a.name }}
         </option>
       </select>
     </div>
-    <div v-if="algorithm">
-      <input v-model.number="width" placeholder="width" type="number"/>
+    <div v-if="config.algorithm">
+      <input v-model.number="config.width" placeholder="width" type="number"/>
       x
-      <input v-model.number="height" placeholder="height" type="number"/>
+      <input v-model.number="config.height" placeholder="height" type="number"/>
       <br/>
-      <input v-model.number="n" placeholder="n" type="number"/>
+      <input v-model.number="config.n" placeholder="n" type="number"/>
+    </div>
+    <div v-if="init">
+      <button v-on:click="$emit('emit-config', config)">Simulate</button>
     </div>
   </div>
 </template>
@@ -25,22 +28,23 @@ export default {
   name: "Configurator",
   data: function () {
     return {
-      algorithm: undefined,
       algorithms: algorithms,
-      n: undefined,
-      width: undefined,
-      height: undefined,
-      step: undefined
+      config: {
+        algorithm: undefined,
+        n: undefined,
+        width: undefined,
+        height: undefined
+      }
     }
   },
   computed: {
     init() {
-      return (this.size && this.n);
+      return (this.size && this.config.n);
     },
     size() {
-      if (this.algorithm === undefined) return undefined;
-      let [w, h] = [this.width ? this.width : 4, this.height ? this.height : 1];
-      switch (this.algorithm.dimension) {
+      let [a, w, h] = [this.config.algorithm, this.config.width, this.config.height];
+      if (a === undefined || w === undefined || h === undefined) return undefined;
+      switch (a.dimension) {
         case 0:
           return [1, 1];
         case 1:

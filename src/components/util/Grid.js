@@ -16,15 +16,11 @@ export default class Grid {
         if (n === undefined) n = size;
         let vs = Array.from({length: n}, (_, i) => i + 1);
 
-        console.log(vs);
-
         // Fisher-Yates (aka Knuth) Shuffle
         for (let idx = vs.length; idx > 0;) {
             let rnd = Math.floor(Math.random() * idx--);
             [vs[idx], vs[rnd]] = [vs[rnd], vs[idx]];
         }
-
-        console.log(vs);
 
         if (n >= size) {
             let [tvs, d0, d1, r] = [[], Math.floor(n / size), Math.ceil(n / size), n % size];
@@ -36,8 +32,6 @@ export default class Grid {
             for (let i = tvs.length; i < size; ++i) tvs.push([]);
             vs = tvs;
         }
-
-        console.log(vs);
 
         {
             let tvs = [];

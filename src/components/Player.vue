@@ -21,10 +21,12 @@ import Grid from "@/components/util/Grid";
 export default {
   name: "Player",
   props: {
-    algorithm: undefined,
-    width: undefined,
-    height: undefined,
-    n: undefined
+    config: {
+      algorithm: undefined,
+      width: undefined,
+      height: undefined,
+      n: undefined
+    }
   },
   data: function () {
     return {
@@ -50,7 +52,7 @@ export default {
       this.calc();
     },
     turn: function (turn) {
-      this.$emit('emit-grid', this.steps[turn]);
+      this.$emit('emit-step', this.steps[turn]);
     },
     interval: function () {
       this.init();
@@ -58,21 +60,23 @@ export default {
   },
   methods: {
     calc() {
-      if ([this.algorithm, this.width, this.height, this.n].every(Boolean)) {
+      if ([this.config.algorithm, this.config.width, this.config.height, this.config.n].every(Boolean)) {
 
-        this.grid = this.algorithm.initStep(Grid.generateGrid(this.width, this.height, this.n));
+        let [a, w, h, n] = [this.config.algorithm, this.config.width, this.config.height, this.config.n];
+
+        this.grid = a.initStep(Grid.generateGrid(w, h, n));
         this.steps = [this.grid];
 
-        let nextGrid = this.algorithm.nextStep(this.grid);
+        let nextGrid = a.nextStep(this.grid);
         let timeout = 0;
-        while (nextGrid != null && timeout++ < 2 * this.width * this.height) {
+        while (nextGrid != null && timeout++ < 2 * w * h) {
           this.steps.push(nextGrid);
-          nextGrid = this.algorithm.nextStep(nextGrid);
+          nextGrid = a.nextStep(nextGrid);
         }
 
         this.turn = 0;
 
-        this.$emit('emit-grid', this.steps[this.turn]);
+        this.$emit('emit-step', this.steps[this.turn]);
 
       }
     },
