@@ -1,101 +1,127 @@
 <template>
-  <div class="player">
-    <br/><br/><br/>
-    <button v-on:click="turn = turn > 0 ? turn - 1 : turn">Prev</button>
-    <button v-on:click="pause = !pause">{{ pause ? "Play" : "Pause" }}</button>
-    <button v-on:click="turn = turn + 1 < steps.length ? turn + 1 : turn">Next</button>
-    <br/>
-    <input v-model.number="interval" placeholder="interval" type="number"/>ms
-    <br/><br/>
-    <select v-model="turn" size="20">
-      <option v-for="(step, t) in steps" :value="t" :key="t">
-        Step: {{ t }}
-      </option>
-    </select>
-  </div>
+  <v-container>
+    <v-row>
+      <v-col align="center">
+        <v-btn :disabled="!steps" @click="skipPrev" icon>
+          <v-icon>mdi-skip-previous</v-icon>
+        </v-btn>
+        <v-btn :disabled="!steps" @click="togglePlay" icon>
+          <v-icon>{{ pause ? 'mdi-play' : 'mdi-pause' }}</v-icon>
+        </v-btn>
+        <v-btn :disabled="!steps" @click="skipNext" icon>
+          <v-icon>mdi-skip-next</v-icon>
+        </v-btn>
+        <v-slider :disabled="!steps" v-model="turn" step="1" min="1" :max="history" thumb-label ticks/>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import Grid from "@/components/util/Grid";
 
 export default {
+
   name: "Player",
+
   props: {
-    config: {
+    config: undefined
+    /*config: {
       algorithm: undefined,
       width: undefined,
       height: undefined,
       n: undefined
-    }
+    }*/
   },
+
   data: function () {
     return {
-      grid: undefined,
+      initStep: undefined,
       steps: undefined,
-      turn: 0,
+      turn: undefined,
       loop: undefined,
       pause: true,
       interval: 1000
     }
   },
+
+  computed: {
+    history() {
+      if (this.steps) return this.steps.length;
+      else return 1;
+    }
+  },
+
   watch: {
-    algorithm: function () {
-      this.calc();
+    config: function () {
+      this.sim();
     },
-    width: function () {
-      this.calc();
-    },
-    height: function () {
-      this.calc();
-    },
-    n: function () {
-      this.calc();
-    },
-    turn: function (turn) {
-      this.$emit('emit-step', this.steps[turn]);
+    turn: function () {
+      if (this.steps) this.emitStep();
     },
     interval: function () {
       this.init();
     }
   },
+
   methods: {
-    calc() {
-      if ([this.config.algorithm, this.config.width, this.config.height, this.config.n].every(Boolean)) {
-
-        let [a, w, h, n] = [this.config.algorithm, this.config.width, this.config.height, this.config.n];
-
-        this.grid = a.initStep(Grid.generateGrid(w, h, n));
-        this.steps = [this.grid];
-
-        let nextGrid = a.nextStep(this.grid);
-        let timeout = 0;
-        while (nextGrid != null && timeout++ < 2 * w * h) {
-          this.steps.push(nextGrid);
-          nextGrid = a.nextStep(nextGrid);
-        }
-
-        this.turn = 0;
-
-        this.$emit('emit-step', this.steps[this.turn]);
-
-      }
-    },
     init() {
 
       if (this.loop) clearInterval(this.loop);
 
       let player = this;
       this.loop = setInterval(function () {
-        if (!player.pause && player.turn + 1 < player.steps.length)
-          ++(player.turn);
+        if (!player.pause) {
+          if (player.turn < player.steps.length) {
+            if (++(player.turn) >= player.steps.length) player.pause = true;
+          } else {
+            player.pause = true;
+          }
+        }
       }, player.interval);
 
+    },
+    sim() {
+
+      let config = this.config;
+
+      if (config) {
+
+        let [a, w, h, n] = [config.algorithm, config.width, config.height, config.n];
+
+        this.initStep = a.initStep(Grid.generateGrid(w, h, n));
+        this.steps = [this.initStep];
+
+        let step = a.nextStep(this.initStep);
+        let timeout = 0;
+        while (step != null && timeout++ < 2 * w * h) {
+          this.steps.push(step);
+          step = a.nextStep(step);
+        }
+
+        this.turn = 1;
+        this.emitStep();
+
+      }
+    },
+    emitStep() {
+      this.$emit('emit-step', this.steps[this.turn - 1]);
+    },
+    skipPrev() {
+      if (this.turn > 1) --this.turn;
+    },
+    skipNext() {
+      if (this.turn < this.steps.length) ++this.turn;
+    },
+    togglePlay() {
+      this.pause = !this.pause;
     }
   },
+
   created: function () {
-    this.calc();
     this.init();
   }
+
 }
 </script>
 

@@ -1,61 +1,79 @@
 <template>
-  <div class="configurator">
-    <div>
-      Algorithm:
-      <select v-model="config.algorithm">
-        <option v-for="a in algorithms" :value="a" :key="a.name">
-          {{ a.name }}
-        </option>
-      </select>
-    </div>
-    <div v-if="config.algorithm">
-      <input v-model.number="config.width" placeholder="width" type="number"/>
-      x
-      <input v-model.number="config.height" placeholder="height" type="number"/>
-      <br/>
-      <input v-model.number="config.n" placeholder="n" type="number"/>
-    </div>
-    <div v-if="init">
-      <button v-on:click="$emit('emit-config', config)">Simulate</button>
-    </div>
-  </div>
+  <v-container>
+    <v-row>
+      <v-col align="center">
+        <v-form ref="form" v-model="valid">
+          <v-select v-model="algorithm" :items="algorithms" :rules="[v => !!v || 'Algorithm is required']"
+                    label="Algorithm"
+                    required/>
+          <v-text-field :disabled="!algorithm" v-model="width" :rules="widthRules" label="Width" type="number" min="1"
+                        required/>
+          <v-text-field :disabled="!algorithm || algorithm.dimension < 2" v-model="height" :rules="heightRules"
+                        label="Height" type="number" min="1" required/>
+          <v-text-field v-model="n" :rules="[v => (!v || v > 0) || 'Number of elements must be positive']"
+                        label="Elements"
+                        type="number" min="1"/>
+          <v-btn :disabled="!valid" @click="sim">Simulate</v-btn>
+        </v-form>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import algorithms from '@/components/algorithms'
 
 export default {
+
   name: "Configurator",
-  data: function () {
-    return {
-      algorithms: algorithms,
-      config: {
-        algorithm: undefined,
-        n: undefined,
-        width: undefined,
-        height: undefined
+
+  data: () => ({
+    valid: true,
+    algorithm: undefined,
+    width: 1,
+    widthRules: [
+      v => !!v || 'Width is required',
+      v => v > 0 || 'Width must be positive'
+    ],
+    height: 1,
+    heightRules: [
+      v => !!v || 'Height is required',
+      v => v > 0 || 'Height must be positive'
+    ],
+    n: undefined
+  }),
+
+  computed: {
+    algorithms() {
+      let items = [];
+      for (let prop in algorithms) {
+        items.push({
+          text: algorithms[prop].name,
+          value: algorithms[prop],
+          disabled: false
+        })
       }
+      return items;
     }
   },
-  computed: {
-    init() {
-      return (this.size && this.config.n);
-    },
-    size() {
-      let [a, w, h] = [this.config.algorithm, this.config.width, this.config.height];
-      if (a === undefined || w === undefined || h === undefined) return undefined;
-      switch (a.dimension) {
-        case 0:
-          return [1, 1];
-        case 1:
-          return [w, 1];
-        case 2:
-          return [w, h];
-        default:
-          return undefined;
-      }
+
+  watch: {
+    algorithm: function (algorithm) {
+      if (algorithm.dimension < 2) this.height = 1;
+    }
+  },
+
+  methods: {
+    sim() {
+      this.$emit('emit-config', {
+        algorithm: this.algorithm,
+        width: this.width,
+        height: this.height,
+        n: this.n
+      });
     }
   }
+
 }
 </script>
 

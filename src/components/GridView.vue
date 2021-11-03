@@ -1,19 +1,22 @@
 <template>
-  <div class="gridview">
-    <div class="grid">
+  <v-container>
+    <div v-if="step">
       <div class="row" v-for="(dx, i) in step.grid.values" :key="i">
         <div class="cell" v-for="(val, j) in dx" :key="j">{{ val }}</div>
       </div>
     </div>
-  </div>
+  </v-container>
 </template>
 
 <script>
 export default {
+
   name: "GridView",
+
   props: {
     step: undefined
   }
+
 }
 
 </script>
