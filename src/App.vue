@@ -11,19 +11,19 @@
 
           <v-col cols="12" sm="2">
             <v-sheet rounded="lg">
-              <Configurator v-on:emit-config="onEmitConfig"/>
+              <Configurator/>
             </v-sheet>
           </v-col>
 
           <v-col cols="12" sm="8">
             <v-sheet min-height="70vh" rounded="lg">
-              <GridView v-bind:step="step"/>
+              <Simulator v-bind:config="config"/>
             </v-sheet>
           </v-col>
 
           <v-col cols="12" sm="2">
             <v-sheet rounded="lg">
-              <Player v-bind:config="config" v-on:emit-step="onEmitStep"/>
+              <Player/>
             </v-sheet>
           </v-col>
 
@@ -36,7 +36,7 @@
 
 <script>
 import Configurator from "@/components/Configurator";
-import GridView from "@/components/GridView";
+import Simulator from "@/components/Simulator";
 import Player from "@/components/Player";
 
 export default {
@@ -45,7 +45,7 @@ export default {
 
   components: {
     Configurator,
-    GridView,
+    Simulator,
     Player
   },
 
@@ -55,12 +55,13 @@ export default {
   }),
 
   methods: {
-    onEmitConfig: function (config) {
-      this.config = config;
-    },
-    onEmitStep: function (step) {
-      this.step = step;
+    loop: function () {
+      requestAnimationFrame(this.loop);
     }
+  },
+
+  mounted: function () {
+    this.loop();
   }
 
 };
