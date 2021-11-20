@@ -6,34 +6,38 @@ export default {
         enabled: false,
         paused: true,
         turn: 1,
-        minTurn: 1,
         maxTurn: 1
     },
 
     getters: {
         turn: state => {
             return state.turn;
+        },
+        minTurn: () => {
+            return 0;
         }
     },
 
     mutations: {
         setEnabled(state, value) {
-            state.enabled = value;
+            state.enabled = Boolean(value);
         },
         setPaused(state, value) {
-            state.paused = value;
+            state.paused = Boolean(value);
         },
         setTurn(state, value) {
-            state.turn = value;
+            if (!Number.isNaN(value) && value >= state.minTurn && value <= state.maxTurn)
+                state.turn = value;
         },
         incrementTurn(state) {
-            if (state.turn < state.maxTurn) ++state.turn;
+            if (state.turn < state.maxTurn) state.turn = Math.floor(state.turn + 1);
         },
         decrementTurn(state) {
-            if (state.turn > state.minTurn) --state.turn;
+            if (state.turn > state.minTurn) state.turn = Math.ceil(state.turn - 1);
         },
         setMaxTurn(state, value) {
-            state.maxTurn = value;
+            if (Number.isInteger(value) && state.minTurn <= value) state.maxTurn = value;
+            else state.maxTurn = state.minTurn;
         },
         minimizeTurn(state) {
             state.turn = state.minTurn;

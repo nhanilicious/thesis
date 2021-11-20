@@ -1,7 +1,7 @@
-import BaseSort from "@/components/util/BaseSort"
-import Grid from "@/components/util/Grid"
-import Highlight from "@/components/util/Highlight";
-import Step from "@/components/util/Step"
+import BaseSort from "@/utils/BaseSort"
+import Grid from "@/utils/Grid"
+import Highlight from "@/utils/Highlight";
+import Step from "@/utils/Step"
 
 export default class EvenOddSort extends BaseSort {
 

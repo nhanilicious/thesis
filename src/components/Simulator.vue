@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Grid from "@/components/util/Grid";
+import Grid from "@/utils/Grid";
 
 export default {
 

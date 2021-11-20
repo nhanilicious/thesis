@@ -13,7 +13,7 @@
           <v-text-field v-model="n" :rules="[v => (!v || v > 0) || 'Number of elements must be positive']"
                         label="Elements"
                         type="number" min="1"/>
-          <v-btn :disabled="!valid" @click="sim">Simulate</v-btn>
+          <v-btn :disabled="!valid" @click="setConfig">Simulate</v-btn>
         </v-form>
       </v-col>
     </v-row>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import algorithms from '@/components/algorithms'
+import {mapGetters} from "vuex";
 
 export default {
 
@@ -45,15 +45,7 @@ export default {
 
   computed: {
     algorithms() {
-      let items = [];
-      for (let prop in algorithms) {
-        items.push({
-          text: algorithms[prop].name,
-          value: algorithms[prop],
-          disabled: false
-        })
-      }
-      return items;
+      return this['config/algorithms']();
     }
   },
 
@@ -64,12 +56,15 @@ export default {
   },
 
   methods: {
-    sim() {
-      this.$emit('emit-config', {
+    ...mapGetters([
+      'config/algorithms'
+    ]),
+    setConfig() {
+      this.$store.dispatch('config/setConfig', {
         algorithm: this.algorithm,
         width: this.width,
         height: this.height,
-        n: this.n
+        elems: this.n ? this.n : (this.width * this.height)
       });
     }
   }
