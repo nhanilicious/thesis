@@ -23,20 +23,28 @@ export default {
                 })
             }
             return items;
+        },
+        config: (state) => {
+            return {
+                algorithm: state.algorithm,
+                width: state.width,
+                height: state.height,
+                elems: state.elems
+            }
         }
     },
 
     mutations: {
-        setAlgorithm(state, value) {
-            if (value.prototype instanceof BaseSort) {
-                state.algorithm = value;
+        setAlgorithm(state, algorithm) {
+            if (algorithm.prototype instanceof BaseSort) {
+                state.algorithm = algorithm;
                 state.width = 1;
                 state.height = 1;
                 state.elems = 1;
             }
         },
         setWidth(state, value) {
-            if (state.algorithm && Number.isInteger(value) && value > 0)
+            if (state.algorithm !== undefined && Number.isInteger(value) && value > 0)
                 state.width = value;
         },
         setHeight(state, value) {

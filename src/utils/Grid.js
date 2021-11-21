@@ -2,6 +2,7 @@ export default class Grid {
 
     width = -1; // width
     height = -1; // height
+    elems = -1; // n
     values = []; // values
 
     constructor(width, height, values) {

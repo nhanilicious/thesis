@@ -62,9 +62,9 @@ export default {
     setConfig() {
       this.$store.dispatch('config/setConfig', {
         algorithm: this.algorithm,
-        width: this.width,
-        height: this.height,
-        elems: this.n ? this.n : (this.width * this.height)
+        width: Number(this.width),
+        height: Number(this.height),
+        elems: Number(this.n ? this.n : (this.width * this.height))
       });
     }
   }

@@ -17,7 +17,7 @@
 
           <v-col cols="12" sm="8">
             <v-sheet min-height="70vh" rounded="lg">
-              <Simulator v-bind:config="config"/>
+              <Simulator/>
             </v-sheet>
           </v-col>
 
@@ -48,11 +48,6 @@ export default {
     Simulator,
     Player
   },
-
-  data: () => ({
-    config: undefined,
-    step: undefined
-  }),
 
   methods: {
     loop: function () {

@@ -1,7 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import config from './modules/config'
-import player from './modules/player'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import config from '@/store/modules/config';
+import memento from "@/store/modules/memento";
+import player from '@/store/modules/player';
 
 Vue.use(Vuex)
 
@@ -11,6 +12,7 @@ export default new Vuex.Store({
 
     modules: {
         config,
+        memento,
         player
     }
 
