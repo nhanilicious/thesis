@@ -6,7 +6,7 @@
           <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
         <v-btn :disabled="!enabled" @click="['player/togglePause']" icon>
-          <v-icon>{{ pause ? 'mdi-play' : 'mdi-pause' }}</v-icon>
+          <v-icon>{{ paused ? 'mdi-play' : 'mdi-pause' }}</v-icon>
         </v-btn>
         <v-btn :disabled="!enabled" @click="['player/incrementTurn']" icon>
           <v-icon>mdi-skip-next</v-icon>
@@ -27,7 +27,7 @@ export default {
   computed: {
     ...mapState({
       enabled: state => state.player.enabled,
-      pause: state => state.player.pause,
+      paused: state => state.player.paused,
       minTurn: state => state.player.minTurn,
       maxTurn: state => state.player.maxTurn
     }),

@@ -38,6 +38,7 @@
 import Configurator from "@/components/Configurator";
 import Simulator from "@/components/Simulator";
 import Player from "@/components/Player";
+import {mapMutations, mapState} from "vuex";
 
 export default {
 
@@ -49,8 +50,18 @@ export default {
     Player
   },
 
+  computed: {
+    ...mapState({
+      paused: state => state.player.paused
+    })
+  },
+
   methods: {
+    ...mapMutations([
+      'player/increaseBy'
+    ]),
     loop: function () {
+      if (!this.paused) this['player/increaseBy']();
       requestAnimationFrame(this.loop);
     }
   },

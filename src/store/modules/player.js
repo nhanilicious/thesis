@@ -20,6 +20,18 @@ export default {
             if (!Number.isNaN(value) && value >= 0 && value <= state.maxTurn)
                 state.turn = value;
         },
+        increaseBy(state, value) {
+            if (!Number.isNaN(value)) {
+                let newTurn = state.turn + value;
+                state.turn = newTurn > state.maxTurn ? state.maxTurn : newTurn;
+            }
+        },
+        decreaseBy(state, value) {
+            if (!Number.isNaN(value)) {
+                let newTurn = state.turn - value;
+                state.turn = newTurn < 0 ? 0 : newTurn;
+            }
+        },
         incrementTurn(state) {
             if (state.turn < state.maxTurn) state.turn = Math.floor(state.turn + 1);
         },
