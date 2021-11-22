@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 
-    strict: true,
+    strict: true, // Enable during development.
 
     modules: {
         config,

@@ -23,7 +23,7 @@
 
           <v-col cols="12" sm="2">
             <v-sheet rounded="lg">
-              <Player/>
+              <Player ref="player"/>
             </v-sheet>
           </v-col>
 
@@ -38,7 +38,6 @@
 import Configurator from "@/components/Configurator";
 import Simulator from "@/components/Simulator";
 import Player from "@/components/Player";
-import {mapMutations, mapState} from "vuex";
 
 export default {
 
@@ -50,18 +49,9 @@ export default {
     Player
   },
 
-  computed: {
-    ...mapState({
-      paused: state => state.player.paused
-    })
-  },
-
   methods: {
-    ...mapMutations([
-      'player/increaseBy'
-    ]),
     loop: function () {
-      if (!this.paused) this['player/increaseBy']();
+      this.$refs.player.update();
       requestAnimationFrame(this.loop);
     }
   },

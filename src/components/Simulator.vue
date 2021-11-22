@@ -17,16 +17,16 @@ export default {
 
   computed: {
     ...mapState({
-      index: state => state.player.turn
+      t: state => state.player.t
     }),
     config() {
       return this['config/config']();
     },
     prevStep() {
-      return this['memento/step']()(this.index - 1);
+      return this['memento/step']()(Math.floor(this.t) - 1);
     },
     currStep() {
-      return this['memento/step']()(this.index);
+      return this['memento/step']()(Math.floor(this.t));
     },
     size() {
       return this['memento/size']();
