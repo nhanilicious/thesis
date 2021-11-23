@@ -18,16 +18,20 @@ export default {
 
   data() {
     return {
+      canvasWidth: 0,
+      canvasHeight: 0,
       camera: null,
       scene: null,
       renderer: null,
-      mesh: null
+      nodes: null
     }
   },
 
   computed: {
+
     ...mapState({
       paused: state => state.player.paused,
+      t: state => state.player.t,
       delta: state => state.player.t % 2
     }),
     config() {
@@ -39,9 +43,47 @@ export default {
     nextStep() {
       return this['memento/step']()(Math.floor(this.t) + 1);
     },
-    size() {
+    stepCount() {
       return this['memento/size']();
+    },
+
+    nodeWidth() {
+
+      if (this.currStep) {
+        let grid = this.currStep.grid;
+        return Math.min(2.0 / (2 * grid.width - 1), 1.0 / (2 * grid.height - 1));
+      } else {
+        return 0;
+      }
+
+    },
+
+    nodePositions() {
+
+      if (this.currStep) {
+
+        let [grid, positions] = [this.currStep.grid, []];
+        let [w, h, s] = [grid.width, grid.height, this.nodeWidth];
+
+        for (let i = 0; i < h; ++i) {
+          positions.push([]);
+          for (let j = 0; j < w; ++j)
+            positions[i].push([(2 * j - w + 1) * s, (2 * i - h + 1) * s]);
+        }
+
+        return positions;
+
+      } else {
+
+        return null;
+
+      }
+    },
+
+    elemWidth() {
+      return 0;
     }
+
   },
 
   watch: {
@@ -50,16 +92,17 @@ export default {
         this['player/reset']();
         this['memento/init']();
         this['memento/calc']();
-        // init Mesh
+        this.initGraphicsObjects();
         this['player/enable']();
       }
     },
-    size: function (value) {
+    stepCount: function (value) {
       this['player/setMaxTurn'](value - 1);
     }
   },
 
   methods: {
+
     ...mapGetters([
       'config/config',
       'memento/size',
@@ -74,47 +117,90 @@ export default {
       'player/enable',
       'player/reset'
     ]),
-    resizeGraphics() {
-      if (this.camera && this.renderer) {
-        let container = document.getElementById('canvasContainer');
-        let [width, height] = [container.clientWidth - 24, container.clientHeight - 24];
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(width, height);
-        this.renderer.render(this.scene, this.camera);
+    update() {
+      this.animateGraphics();
+    },
+
+    initGraphics() {
+
+      let container = document.getElementById('canvasContainer');
+      [this.canvasWidth, this.canvasHeight] = [container.clientWidth - 24, container.clientHeight - 24];
+
+      this.camera = new Three.PerspectiveCamera(50, this.canvasWidth / this.canvasHeight, 0.01, 10);
+      this.camera.position.z = 1.5;
+      this.scene = new Three.Scene();
+
+      this.renderer = new Three.WebGLRenderer({antialias: true});
+      this.renderer.setSize(this.canvasWidth, this.canvasHeight);
+      container.appendChild(this.renderer.domElement);
+      this.renderer.render(this.scene, this.camera);
+
+    },
+
+    initGraphicsObjects() {
+
+      while (this.scene.children.length)
+        this.scene.remove(this.scene.children[0]);
+      this.nodes = [];
+
+      if (this.currStep) {
+
+        console.log(this.nodePositions);
+
+        let grid = this.currStep.grid;
+        let [w, h] = [grid.width, grid.height];
+
+        for (let i = 0; i < h; ++i) {
+
+          this.nodes.push([]);
+
+          for (let j = 0; j < w; ++j) {
+
+            let geometry = new Three.BoxGeometry(this.nodeWidth, this.nodeWidth, this.nodeWidth);
+            let edges = new Three.EdgesGeometry(geometry);
+            let node = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0xffffff}));
+            console.log(node.position);
+            [node.position.x, node.position.y] = [this.nodePositions[i][j][0], this.nodePositions[i][j][1]];
+
+            this.nodes[i].push(node);
+            this.scene.add(this.nodes[i][j]);
+
+          }
+        }
+
       }
     },
-    update() {
-      if (this.renderer && !this.paused) {
-        this.mesh.rotation.x = this.delta;
-        this.mesh.rotation.y = this.delta;
+
+    resizeGraphics() {
+
+      let container = document.getElementById('canvasContainer');
+      [this.canvasWidth, this.canvasHeight] = [container.clientWidth - 24, container.clientHeight - 24];
+
+      if (this.camera && this.renderer) {
+        this.camera.aspect = this.canvasWidth / this.canvasHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(this.canvasWidth, this.canvasHeight);
         this.renderer.render(this.scene, this.camera);
       }
+
+    },
+
+    animateGraphics() {
+
+      if (this.renderer) {
+        if (!this.paused) {
+          this.mesh.rotation.x = this.delta;
+          this.mesh.rotation.y = this.delta;
+        }
+        this.renderer.render(this.scene, this.camera);
+      }
+
     }
+
   },
 
   mounted: function () {
-
-    let container = document.getElementById('canvasContainer');
-    let [width, height] = [container.clientWidth - 24, container.clientHeight - 24];
-
-    this.camera = new Three.PerspectiveCamera(70, width / height, 0.01, 10);
-    this.camera.position.z = 1;
-
-    this.scene = new Three.Scene();
-
-    let geometry = new Three.BoxGeometry(0.2, 0.2, 0.2);
-    let material = new Three.MeshNormalMaterial();
-
-    this.mesh = new Three.Mesh(geometry, material);
-    this.scene.add(this.mesh);
-
-    this.renderer = new Three.WebGLRenderer({antialias: true});
-    this.renderer.setSize(width, height);
-    container.appendChild(this.renderer.domElement);
-
-    this.renderer.render(this.scene, this.camera);
-
+    this.initGraphics();
   }
 
 }
