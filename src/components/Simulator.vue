@@ -368,6 +368,9 @@ export default {
             let [dx, dy] = [(x1 - x0) * delayed, (y1 - y0) * delayed];
             this.elems[i].position.x = x0 + dx;
             this.elems[i].position.y = y0 + dy;
+          } else {
+            this.elems[i].position.x = x0;
+            this.elems[i].position.y = y0;
           }
         }
 
