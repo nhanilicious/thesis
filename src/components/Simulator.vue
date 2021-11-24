@@ -148,9 +148,6 @@ export default {
     },
     stepCount: function (value) {
       this['player/setMaxTurn'](value - 1);
-    },
-    elemCurrPositions: function (value) {
-      console.log(value);
     }
   },
 
@@ -208,7 +205,7 @@ export default {
 
           for (let j = 0; j < w; ++j) {
 
-            let geometry = new Three.BoxGeometry(this.nodeWidth, this.nodeWidth, this.nodeWidth);
+            let geometry = new Three.BoxGeometry(this.nodeWidth, this.nodeWidth, this.nodeWidth / 2);
             let edges = new Three.EdgesGeometry(geometry);
             let node = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0xffffff}));
             [node.position.x, node.position.y] = [this.nodePositions[i][j][0], this.nodePositions[i][j][1]];
