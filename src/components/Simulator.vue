@@ -24,6 +24,7 @@ export default {
       scene: null,
       renderer: null,
       nodes: null,
+      pipes: null,
       elems: null
     }
   },
@@ -78,6 +79,35 @@ export default {
         return null;
 
       }
+    },
+
+    pipePositions() {
+
+      if (this.nodePositions) {
+
+        let [grid, positions] = [this.currStep.grid, [[], []]];
+        let [w, h, s] = [grid.width, grid.height, this.nodeWidth];
+
+        for (let i = 0; i < h; ++i) {
+          positions[0].push([]);
+          for (let j = 0; j < w - 1; ++j)
+            positions[0][i].push([this.nodePositions[i][j][0] + s, this.nodePositions[i][j][1]]);
+        }
+
+        for (let i = 0; i < h - 1; ++i) {
+          positions[1].push([]);
+          for (let j = 0; j < w; ++j)
+            positions[1][i].push([this.nodePositions[i][j][0], this.nodePositions[i][j][1] - s]);
+        }
+
+        return positions;
+
+      } else {
+
+        return null;
+
+      }
+
     },
 
     elemWidth() {
@@ -148,6 +178,43 @@ export default {
     },
     stepCount: function (value) {
       this['player/setMaxTurn'](value - 1);
+    },
+    nextStep: function (step) {
+
+      if (this.nodes && this.pipes) {
+
+        for (let i = 0; i < this.nodes.length; ++i)
+          for (let j = 0; j < this.nodes[i].length; ++j)
+            this.nodes[i][j].material.color.setHex(0x333333);
+
+        for (let d = 0; d < this.pipes.length; ++d)
+          for (let i = 0; i < this.pipes[d].length; ++i)
+            for (let j = 0; j < this.pipes[d][i].length; ++j)
+              this.pipes[d][i][j].material.color.setHex(0x333333);
+
+        if (step) {
+
+          for (let idx in step.highlights) {
+
+            let highlight = step.highlights[idx];
+            let [x0, y0] = highlight.topLeft;
+            let [x1, y1] = highlight.bottomRight;
+
+            for (let i = x0; i <= x1; ++i)
+              for (let j = y0; j <= y1; ++j) {
+
+                if (j < y1) this.pipes[0][i][j].material.color.setHex(0xffffff);
+                if (i < x1) this.pipes[1][i][j].material.color.setHex(0xffffff);
+                this.nodes[i][j].material.color.setHex(0xffffff);
+
+              }
+
+          }
+
+        }
+
+      }
+
     }
   },
 
@@ -192,6 +259,7 @@ export default {
       while (this.scene.children.length)
         this.scene.remove(this.scene.children[0]);
       this.nodes = [];
+      this.pipes = [[], []];
       this.elems = [];
 
       if (this.currStep) {
@@ -199,6 +267,7 @@ export default {
         let grid = this.currStep.grid;
         let [w, h, n] = [grid.width, grid.height, grid.elems];
 
+        // nodes
         for (let i = 0; i < h; ++i) {
 
           this.nodes.push([]);
@@ -207,7 +276,7 @@ export default {
 
             let geometry = new Three.BoxGeometry(this.nodeWidth, this.nodeWidth, this.nodeWidth / 2);
             let edges = new Three.EdgesGeometry(geometry);
-            let node = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0xffffff}));
+            let node = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x333333}));
             [node.position.x, node.position.y] = [this.nodePositions[i][j][0], this.nodePositions[i][j][1]];
 
             this.nodes[i].push(node);
@@ -216,6 +285,44 @@ export default {
           }
         }
 
+        // horizontal pipes
+        for (let i = 0; i < h; ++i) {
+
+          this.pipes[0].push([]);
+
+          for (let j = 0; j < w - 1; ++j) {
+
+            let geometry = new Three.CylinderGeometry(this.nodeWidth / 4, this.nodeWidth / 4, this.nodeWidth);
+            let edges = new Three.EdgesGeometry(geometry);
+            let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x333333}));
+            [pipe.position.x, pipe.position.y] = [this.pipePositions[0][i][j][0], this.pipePositions[0][i][j][1]];
+            [pipe.rotation.x, pipe.rotation.z] = [Math.PI / 2, Math.PI / 2];
+
+            this.pipes[0][i].push(pipe);
+            this.scene.add(this.pipes[0][i][j]);
+
+          }
+        }
+
+        // vertical pipes
+        for (let i = 0; i < h - 1; ++i) {
+
+          this.pipes[1].push([]);
+
+          for (let j = 0; j < w; ++j) {
+
+            let geometry = new Three.CylinderGeometry(this.nodeWidth / 4, this.nodeWidth / 4, this.nodeWidth, 7);
+            let edges = new Three.EdgesGeometry(geometry);
+            let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x333333}));
+            [pipe.position.x, pipe.position.y] = [this.pipePositions[1][i][j][0], this.pipePositions[1][i][j][1]];
+
+            this.pipes[1][i].push(pipe);
+            this.scene.add(this.pipes[1][i][j]);
+
+          }
+        }
+
+        // elems
         for (let i = 0; i < n; ++i) {
 
           let canvas = document.createElement("canvas");
