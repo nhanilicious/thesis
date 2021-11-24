@@ -5,17 +5,18 @@ export default class Grid {
     elems = -1; // n
     values = []; // values
 
-    constructor(width, height, values) {
+    constructor(width, height, elems, values) {
         this.width = width;
         this.height = height;
+        this.elems = elems;
         this.values = JSON.parse(JSON.stringify(values));
     }
 
-    static generateGrid(width, height, n) {
+    static generateGrid(width, height, elems) {
 
         let size = width * height;
-        if (n === undefined) n = size;
-        let vs = Array.from({length: n}, (_, i) => i + 1);
+        if (elems === undefined) elems = size;
+        let vs = Array.from({length: elems}, (_, i) => i + 1);
 
         // Fisher-Yates (aka Knuth) Shuffle
         for (let idx = vs.length; idx > 0;) {
@@ -23,8 +24,8 @@ export default class Grid {
             [vs[idx], vs[rnd]] = [vs[rnd], vs[idx]];
         }
 
-        if (n >= size) {
-            let [tvs, d0, d1, r] = [[], Math.floor(n / size), Math.ceil(n / size), n % size];
+        if (elems >= size) {
+            let [tvs, d0, d1, r] = [[], Math.floor(elems / size), Math.ceil(elems / size), elems % size];
             for (let i = 0; i < r; ++i) tvs.push(vs.splice(0, d1));
             for (let i = r; i < size; ++i) tvs.push(vs.length ? vs.splice(0, d0) : []);
             vs = tvs;
@@ -40,13 +41,13 @@ export default class Grid {
             vs = tvs;
         }
 
-        return new Grid(width, height, vs);
+        return new Grid(width, height, elems, vs);
 
     }
 
     static cloneDeep(grid) {
 
-        return new Grid(grid.width, grid.height, grid.values);
+        return new Grid(grid.width, grid.height, grid.elems, grid.values);
 
     }
 
