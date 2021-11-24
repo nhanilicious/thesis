@@ -191,7 +191,7 @@ export default {
         for (let d = 0; d < this.pipes.length; ++d)
           for (let i = 0; i < this.pipes[d].length; ++i)
             for (let j = 0; j < this.pipes[d][i].length; ++j)
-              this.pipes[d][i][j].material.color.setHex(0x333333);
+              this.pipes[d][i][j].material.color.setHex(0x222222);
 
         if (step) {
 
@@ -293,9 +293,9 @@ export default {
 
           for (let j = 0; j < w - 1; ++j) {
 
-            let geometry = new Three.CylinderGeometry(this.nodeWidth / 4, this.nodeWidth / 4, this.nodeWidth);
+            let geometry = new Three.CylinderGeometry(this.nodeWidth / 4, this.nodeWidth / 4, this.nodeWidth, 4);
             let edges = new Three.EdgesGeometry(geometry);
-            let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x333333}));
+            let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x222222}));
             [pipe.position.x, pipe.position.y] = [this.pipePositions[0][i][j][0], this.pipePositions[0][i][j][1]];
             [pipe.rotation.x, pipe.rotation.z] = [Math.PI / 2, Math.PI / 2];
 
@@ -312,9 +312,9 @@ export default {
 
           for (let j = 0; j < w; ++j) {
 
-            let geometry = new Three.CylinderGeometry(this.nodeWidth / 4, this.nodeWidth / 4, this.nodeWidth, 7);
+            let geometry = new Three.CylinderGeometry(this.nodeWidth / 4, this.nodeWidth / 4, this.nodeWidth, 4);
             let edges = new Three.EdgesGeometry(geometry);
-            let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x333333}));
+            let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x222222}));
             [pipe.position.x, pipe.position.y] = [this.pipePositions[1][i][j][0], this.pipePositions[1][i][j][1]];
 
             this.pipes[1][i].push(pipe);
