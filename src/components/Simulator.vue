@@ -360,9 +360,15 @@ export default {
         for (let i = 0; i < this.elems.length; i++) {
           let [x0, y0] = [this.elemCurrPositions[i][0], this.elemCurrPositions[i][1]];
           let [x1, y1] = [this.elemNextPositions[i][0], this.elemNextPositions[i][1]];
-          let [dx, dy] = [(x1 - x0) * this.delta, (y1 - y0) * this.delta];
-          this.elems[i].position.x = x0 + dx;
-          this.elems[i].position.y = y0 + dy;
+          let delayed = this.delta * 2.0 - 0.5;
+          if (delayed > 1.0) {
+            this.elems[i].position.x = x1;
+            this.elems[i].position.y = y1;
+          } else if (delayed > 0.0) {
+            let [dx, dy] = [(x1 - x0) * delayed, (y1 - y0) * delayed];
+            this.elems[i].position.x = x0 + dx;
+            this.elems[i].position.y = y0 + dy;
+          }
         }
 
       }
