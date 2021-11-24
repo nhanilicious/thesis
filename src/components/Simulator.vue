@@ -125,8 +125,9 @@ export default {
 
         for (let i = 0; i < h; ++i) {
           for (let j = 0; j < w; ++j)
-            for (let k = 0; k < grid.values[j][i].length; ++k)
-              positions[grid.values[j][i][k] - 1] = [this.nodePositions[j][i][0], this.nodePositions[j][i][1]];
+            for (let k = 0; k < grid.values[i][j].length; ++k) {
+              positions[grid.values[i][j][k] - 1] = [this.nodePositions[i][j][0], this.nodePositions[i][j][1]];
+            }
         }
 
         return positions;
@@ -150,8 +151,8 @@ export default {
 
         for (let i = 0; i < h; ++i) {
           for (let j = 0; j < w; ++j)
-            for (let k = 0; k < grid.values[j][i].length; ++k)
-              positions[grid.values[j][i][k] - 1] = [this.nodePositions[j][i][0], this.nodePositions[j][i][1]];
+            for (let k = 0; k < grid.values[i][j].length; ++k)
+              positions[grid.values[i][j][k] - 1] = [this.nodePositions[i][j][0], this.nodePositions[i][j][1]];
         }
 
         return positions;
