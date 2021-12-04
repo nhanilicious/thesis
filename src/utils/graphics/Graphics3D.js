@@ -290,6 +290,9 @@ export default class Graphics3D {
             for (let i = 0; i < h; ++i) {
                 for (let j = 0; j < w; ++j)
                     for (let k = 0; k < grid.values[i][j].length; ++k) {
+                        // pre code
+                        /*let w = Math.ceil(Math.sqrt(grid.values[i][j].length));
+                        let [s, h] = [this.nodeSize / w, grid.values[i][j] > w * (w - 1) ? w : w - 1];*/
                         positions[grid.values[i][j][k] - 1] = [this.nodePos[i][j][0], this.nodePos[i][j][1]];
                     }
             }
