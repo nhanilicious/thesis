@@ -5,9 +5,9 @@ export default class Graphics3D {
     // dimensions
     canvasWidth = 0.0;
     canvasHeight = 0.0;
-    nodeWidth = 0.0;
-    pipeWidth = 0.0;
-    elemWidth = 0.0;
+    nodeSize = 0.0;
+    pipeSize = 0.0;
+    elemSize = null;
 
     // coords
     nodePos = null;
@@ -103,8 +103,8 @@ export default class Graphics3D {
         let [w, h] = [grid.width, grid.height];
 
         // node width
-        this.nodeWidth = Math.min(2.0 / (2 * w - 1), 1.0 / (2 * h - 1));
-        let [s, positions] = [this.nodeWidth, []];
+        this.nodeSize = Math.min(2.0 / (2 * w - 1), 1.0 / (2 * h - 1));
+        let [s, positions] = [this.nodeSize, []];
 
         // node positions
         for (let i = 0; i < h; ++i) {
@@ -122,7 +122,7 @@ export default class Graphics3D {
 
             for (let j = 0; j < w; ++j) {
 
-                let geometry = new Three.BoxGeometry(this.nodeWidth, this.nodeWidth, this.nodeWidth / 2);
+                let geometry = new Three.BoxGeometry(this.nodeSize, this.nodeSize, this.nodeSize / 2);
                 let edges = new Three.EdgesGeometry(geometry);
                 let node = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x333333}));
                 [node.position.x, node.position.y] = [this.nodePos[i][j][0], this.nodePos[i][j][1]];
@@ -137,10 +137,10 @@ export default class Graphics3D {
 
     _initPipes(grid) {
 
-        let [w, h, s, positions] = [grid.width, grid.height, this.nodeWidth, [[], []]];
+        let [w, h, s, positions] = [grid.width, grid.height, this.nodeSize, [[], []]];
 
         // pipe width
-        this.pipeWidth = this.nodeWidth;
+        this.pipeSize = this.nodeSize;
 
         // pipe positions
         for (let i = 0; i < h; ++i) {
@@ -163,7 +163,7 @@ export default class Graphics3D {
 
             for (let j = 0; j < w - 1; ++j) {
 
-                let geometry = new Three.CylinderGeometry(this.nodeWidth / 4, this.nodeWidth / 4, this.nodeWidth, 4);
+                let geometry = new Three.CylinderGeometry(this.nodeSize / 4, this.nodeSize / 4, this.nodeSize, 4);
                 let edges = new Three.EdgesGeometry(geometry);
                 let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x222222}));
                 [pipe.position.x, pipe.position.y] = [this.pipePos[0][i][j][0], this.pipePos[0][i][j][1]];
@@ -182,7 +182,7 @@ export default class Graphics3D {
 
             for (let j = 0; j < w; ++j) {
 
-                let geometry = new Three.CylinderGeometry(this.nodeWidth / 4, this.nodeWidth / 4, this.nodeWidth, 4);
+                let geometry = new Three.CylinderGeometry(this.nodeSize / 4, this.nodeSize / 4, this.nodeSize, 4);
                 let edges = new Three.EdgesGeometry(geometry);
                 let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x222222}));
                 [pipe.position.x, pipe.position.y] = [this.pipePos[1][i][j][0], this.pipePos[1][i][j][1]];
@@ -197,10 +197,7 @@ export default class Graphics3D {
 
     _initElems(grid) {
 
-        // elem width
-        this.elemWidth = this.nodeWidth * 0.25;
-
-        // elem positions
+        // elem width and positions
         this.updateObjects(grid, null);
 
         let n = grid.elems;
@@ -226,7 +223,7 @@ export default class Graphics3D {
             let texture = new Three.Texture(canvas);
             texture.needsUpdate = true;
             let material = new Three.MeshBasicMaterial({map: texture});
-            let elem = new Three.Mesh(new Three.CircleGeometry(this.elemWidth, 20), material);
+            let elem = new Three.Mesh(new Three.CircleGeometry(this.elemSize[0][i], 20), material);
             [elem.overdraw, elem.position.x, elem.position.y] = [true, this.elemPos[0][i][0], this.elemPos[0][i][1]];
 
             this.elems.push(elem);
@@ -239,15 +236,45 @@ export default class Graphics3D {
     updateObjects(grid0, grid1) {
 
         let [elemPos0, elemPos1] = [this._calcElemPos(grid0), this._calcElemPos(grid1)];
+        let [elemSize0, elemSize1] = [this._calcElemSize(grid0), this._calcElemSize(grid1)];
 
         if (elemPos0) {
             if (elemPos1) {
                 this.elemPos = [elemPos0, elemPos1];
+                this.elemSize = [elemSize0, elemSize1];
             } else {
                 this.elemPos = [elemPos0, JSON.parse(JSON.stringify(elemPos0))];
+                this.elemSize = [elemSize0, JSON.parse(JSON.stringify(elemSize0))];
             }
         } else {
             this.elemPos = [[], []];
+            this.elemSize = [[], []];
+        }
+
+    }
+
+    _calcElemSize(grid) {
+
+        if (grid) {
+
+            let [w, h, n, sizes] = [grid.width, grid.height, grid.elems, []];
+
+            for (let i = 0; i < n; ++i) sizes.push([]);
+
+            for (let i = 0; i < h; ++i) {
+                for (let j = 0; j < w; ++j)
+                    for (let k = 0; k < grid.values[i][j].length; ++k) {
+                        let s = 0.9 * this.nodeSize / Math.ceil(Math.sqrt(grid.values[i][j].length));
+                        sizes[grid.values[i][j][k] - 1] = Math.min(s, this.nodeSize * 0.25);
+                    }
+            }
+
+            return sizes;
+
+        } else {
+
+            return null;
+
         }
 
     }
