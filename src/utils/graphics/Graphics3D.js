@@ -163,11 +163,12 @@ export default class Graphics3D {
 
             for (let j = 0; j < w - 1; ++j) {
 
-                let geometry = new Three.CylinderGeometry(this.nodeSize / 4, this.nodeSize / 4, this.nodeSize, 4);
-                let edges = new Three.EdgesGeometry(geometry);
-                let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x222222}));
+                let geometry = new Three.BufferGeometry().setFromPoints([
+                    new Three.Vector3(-0.5 * this.nodeSize, 0, 0),
+                    new Three.Vector3(0.5 * this.nodeSize, 0, 0)
+                ]);
+                let pipe = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: 0x222222}));
                 [pipe.position.x, pipe.position.y] = [this.pipePos[0][i][j][0], this.pipePos[0][i][j][1]];
-                [pipe.rotation.x, pipe.rotation.z] = [Math.PI / 2, Math.PI / 2];
 
                 this.pipes[0][i].push(pipe);
                 this.scene.add(this.pipes[0][i][j]);
@@ -182,9 +183,11 @@ export default class Graphics3D {
 
             for (let j = 0; j < w; ++j) {
 
-                let geometry = new Three.CylinderGeometry(this.nodeSize / 4, this.nodeSize / 4, this.nodeSize, 4);
-                let edges = new Three.EdgesGeometry(geometry);
-                let pipe = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x222222}));
+                let geometry = new Three.BufferGeometry().setFromPoints([
+                    new Three.Vector3(0, -0.5 * this.nodeSize, 0),
+                    new Three.Vector3(0, 0.5 * this.nodeSize, 0)
+                ]);
+                let pipe = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: 0x222222}));
                 [pipe.position.x, pipe.position.y] = [this.pipePos[1][i][j][0], this.pipePos[1][i][j][1]];
 
                 this.pipes[1][i].push(pipe);
