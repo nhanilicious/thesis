@@ -70,7 +70,7 @@ export default class Graphics3D {
 
         if (this.nodes) {
             for (let i = 0; i < this.nodes.length; ++i)
-                for (let j = 0; j < this.nodes[0].length; ++j) {
+                for (let j = 0; j < this.nodes[i].length; ++j) {
                     this.nodes[i][j].geometry.dispose();
                     this.nodes[i][j].material.dispose();
                 }
@@ -78,8 +78,8 @@ export default class Graphics3D {
 
         if (this.pipes) {
             for (let i = 0; i < this.pipes.length; ++i)
-                for (let j = 0; j < this.pipes[0].length; ++j)
-                    for (let k = 0; k < this.pipes[0][0].length; ++k) {
+                for (let j = 0; j < this.pipes[i].length; ++j)
+                    for (let k = 0; k < this.pipes[i][j].length; ++k) {
                         this.pipes[i][j][k].geometry.dispose();
                         this.pipes[i][j][k].material.dispose();
                     }
@@ -102,7 +102,7 @@ export default class Graphics3D {
 
         let [w, h] = [grid.width, grid.height];
 
-        // node width
+        // node size
         this.nodeSize = Math.min(2.0 / (2 * w - 1), 1.0 / (2 * h - 1));
         let [s, positions] = [this.nodeSize, []];
 
@@ -264,7 +264,7 @@ export default class Graphics3D {
             for (let i = 0; i < h; ++i) {
                 for (let j = 0; j < w; ++j)
                     for (let k = 0; k < grid.values[i][j].length; ++k) {
-                        let s = 0.9 * this.nodeSize / Math.ceil(Math.sqrt(grid.values[i][j].length));
+                        let s = 0.4 * this.nodeSize / Math.ceil(Math.sqrt(grid.values[i][j].length));
                         sizes[grid.values[i][j][k] - 1] = Math.min(s, this.nodeSize * 0.25);
                     }
             }
@@ -290,10 +290,15 @@ export default class Graphics3D {
             for (let i = 0; i < h; ++i) {
                 for (let j = 0; j < w; ++j)
                     for (let k = 0; k < grid.values[i][j].length; ++k) {
-                        // pre code
-                        /*let w = Math.ceil(Math.sqrt(grid.values[i][j].length));
-                        let [s, h] = [this.nodeSize / w, grid.values[i][j] > w * (w - 1) ? w : w - 1];*/
-                        positions[grid.values[i][j][k] - 1] = [this.nodePos[i][j][0], this.nodePos[i][j][1]];
+
+                        let nw = Math.ceil(Math.sqrt(grid.values[i][j].length));
+                        let [ns, nh] = [this.nodeSize / nw, (grid.values[i][j].length > (nw * (nw - 1))) ? nw : (nw - 1)];
+
+                        positions[grid.values[i][j][k] - 1] = [
+                            this.nodePos[i][j][0] + ((k % nw) - 0.5 * (nw - 1)) * ns,
+                            this.nodePos[i][j][1] + (nh - Math.floor(k / nw) - 0.5 * (nh + 1)) * ns
+                        ];
+
                     }
             }
 
