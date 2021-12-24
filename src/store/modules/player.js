@@ -40,9 +40,11 @@ export default {
             if (state.t > 0) state.t = Math.ceil(state.t - 1);
         },
         setMaxTurn(state, value) {
-            if (Number.isInteger(value) && value >= 0) state.t_max = value;
-            else state.t_max = 0;
-            if (state.t == state.t_max) state.paused = true;
+            if (Number.isInteger(value) && value >= 0) {
+                state.t_max = value;
+                if (state.t > state.t_max) state.t = state.t_max;
+                if (state.t == state.t_max) state.paused = true;
+            }
         },
         minimizeTurn(state) {
             state.t = 0;
@@ -73,7 +75,7 @@ export default {
             commit('setEnabled', false);
             commit('setPaused', true);
             commit('minimizeTurn');
-            commit('setMaxTurn', 1);
+            commit('setMaxTurn', 0);
         }
     }
 
