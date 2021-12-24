@@ -6,7 +6,8 @@ export default {
         enabled: false,
         paused: true,
         t: 0,
-        t_max: 0
+        t_max: 0,
+        delta: 0.01
     },
 
     mutations: {
@@ -52,6 +53,9 @@ export default {
         maximizeTurn(state) {
             state.t = state.t_max;
             state.paused = true;
+        },
+        setDelta(state, value) {
+            state.delta = value;
         }
     },
 
@@ -76,6 +80,10 @@ export default {
             commit('setPaused', true);
             commit('minimizeTurn');
             commit('setMaxTurn', 0);
+            commit('setDelta', 0.01);
+        },
+        modifyByDelta({commit, state}) {
+            commit('modifyBy', state.delta);
         }
     }
 
