@@ -22,17 +22,13 @@ export default {
                 if (state.t == state.t_max) state.paused = true;
             }
         },
-        increaseBy(state, value) {
+        modifyBy(state, value) {
             if (Number.isFinite(value)) {
                 let newTurn = state.t + value;
-                state.t = newTurn > state.t_max ? state.t_max : newTurn;
-                if (state.t == state.t_max) state.paused = true;
-            }
-        },
-        decreaseBy(state, value) {
-            if (Number.isFinite(value)) {
-                let newTurn = state.t - value;
-                state.t = newTurn < 0 ? 0 : newTurn;
+                if (newTurn <= state.t_max)
+                    if (newTurn >= 0.0) state.t = newTurn;
+                    else state.t = 0.0;
+                else state.t = state.t_max;
                 if (state.t == state.t_max) state.paused = true;
             }
         },

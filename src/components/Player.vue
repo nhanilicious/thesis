@@ -52,7 +52,7 @@ export default {
     },
     update() {
       if (this.enabled && !this.paused)
-        this.$store.commit('player/increaseBy', 0.01);
+        this.$store.commit('player/modifyBy', 0.01);
     }
   }
 
