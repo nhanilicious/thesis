@@ -1,7 +1,7 @@
-import EvenOddSort from './EvenOddSort'
+import OddEvenSort from './OddEvenSort'
 import ShearSort from './ShearSort'
 
 export default {
-    EvenOddSort,
+    OddEvenSort: OddEvenSort,
     ShearSort
 }
