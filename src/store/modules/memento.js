@@ -27,7 +27,7 @@ export default {
             state.complete = true;
         },
         init(state, {algorithm, width, height, elems}) {
-            if (!state.last && algorithm.prototype instanceof BaseSort) {
+            if (!state.algorithm && algorithm.prototype instanceof BaseSort) {
                 state.algorithm = algorithm;
                 state.steps.push(algorithm.initStep(Grid.generateGrid(width, height, elems)));
                 state.complete = false;
@@ -43,9 +43,13 @@ export default {
     },
 
     actions: {
-        init({commit, rootGetters}) {
+        /*init({commit, rootGetters}) {
             commit('clear');
             commit('init', rootGetters['config/config']);
+        },*/
+        init({commit}, config) {
+            commit('clear');
+            commit('init', config);
         },
         calc({commit, state}) {
             return new Promise((resolve) => {

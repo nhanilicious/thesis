@@ -47,7 +47,7 @@ export default {
     config: function (value) {
       if (value) {
         this['player/reset']();
-        this['memento/init']();
+        this['memento/init'](value);
         this['memento/calc']();
         this.initGraphicsObjects();
         this['player/enable']();
@@ -74,8 +74,8 @@ export default {
       'player/setMaxTurn'
     ]),
     ...mapActions([
-      'memento/init',
       'memento/calc',
+      'memento/init',
       'player/enable',
       'player/reset'
     ]),
