@@ -3,10 +3,10 @@ import Grid from "@/utils/Grid"
 import Highlight from "@/utils/Highlight";
 import Step from "@/utils/Step"
 
-export default class EvenOddSort extends BaseSort {
+export default class OddEvenSort extends BaseSort {
 
     static dimension = 1;
-    static name = "Even Odd Sort";
+    static name = "Odd Even Sort";
 
     static initStep(grid) {
 

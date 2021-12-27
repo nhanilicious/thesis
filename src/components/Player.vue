@@ -31,10 +31,10 @@ export default {
       t_max: state => state.player.t_max
     }),
     t: {
-      get () {
+      get() {
         return Math.floor(this.$store.state.player.t);
       },
-      set (value) {
+      set(value) {
         this.$store.commit('player/setT', value);
       }
     }
@@ -52,7 +52,7 @@ export default {
     },
     update() {
       if (this.enabled && !this.paused)
-        this.$store.commit('player/increaseBy', 0.01);
+        this.$store.dispatch('player/modifyByDelta');
     }
   }
 

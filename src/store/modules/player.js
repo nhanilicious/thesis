@@ -6,7 +6,8 @@ export default {
         enabled: false,
         paused: true,
         t: 0,
-        t_max: 0
+        t_max: 0,
+        delta: 0.01
     },
 
     mutations: {
@@ -22,17 +23,13 @@ export default {
                 if (state.t == state.t_max) state.paused = true;
             }
         },
-        increaseBy(state, value) {
+        modifyBy(state, value) {
             if (Number.isFinite(value)) {
                 let newTurn = state.t + value;
-                state.t = newTurn > state.t_max ? state.t_max : newTurn;
-                if (state.t == state.t_max) state.paused = true;
-            }
-        },
-        decreaseBy(state, value) {
-            if (Number.isFinite(value)) {
-                let newTurn = state.t - value;
-                state.t = newTurn < 0 ? 0 : newTurn;
+                if (newTurn <= state.t_max)
+                    if (newTurn >= 0.0) state.t = newTurn;
+                    else state.t = 0.0;
+                else state.t = state.t_max;
                 if (state.t == state.t_max) state.paused = true;
             }
         },
@@ -44,9 +41,11 @@ export default {
             if (state.t > 0) state.t = Math.ceil(state.t - 1);
         },
         setMaxTurn(state, value) {
-            if (Number.isInteger(value) && value >= 0) state.t_max = value;
-            else state.t_max = 0;
-            if (state.t == state.t_max) state.paused = true;
+            if (Number.isInteger(value) && value >= 0) {
+                state.t_max = value;
+                if (state.t > state.t_max) state.t = state.t_max;
+                if (state.t == state.t_max) state.paused = true;
+            }
         },
         minimizeTurn(state) {
             state.t = 0;
@@ -54,6 +53,9 @@ export default {
         maximizeTurn(state) {
             state.t = state.t_max;
             state.paused = true;
+        },
+        setDelta(state, value) {
+            state.delta = value;
         }
     },
 
@@ -77,7 +79,11 @@ export default {
             commit('setEnabled', false);
             commit('setPaused', true);
             commit('minimizeTurn');
-            commit('setMaxTurn', 1);
+            commit('setMaxTurn', 0);
+            commit('setDelta', 0.01);
+        },
+        modifyByDelta({commit, state}) {
+            commit('modifyBy', state.delta);
         }
     }
 
