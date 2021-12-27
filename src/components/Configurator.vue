@@ -10,7 +10,7 @@
                         required/>
           <v-text-field :disabled="!algorithm || algorithm.dimension < 2" v-model="height" :rules="heightRules"
                         label="Height" type="number" min="1" required/>
-          <v-text-field v-model="n" :rules="[v => (!v || v > 0) || 'Number of elements must be positive']"
+          <v-text-field v-model="elems" :rules="[v => (!v || v > 0) || 'Number of elements must be positive']"
                         label="Elements"
                         type="number" min="1"/>
           <v-btn :disabled="!valid" @click="setConfig">Simulate</v-btn>
@@ -40,7 +40,7 @@ export default {
       v => !!v || 'Height is required',
       v => v > 0 || 'Height must be positive'
     ],
-    n: undefined
+    elems: undefined
   }),
 
   computed: {
@@ -64,7 +64,7 @@ export default {
         algorithm: this.algorithm,
         width: Number(this.width),
         height: Number(this.height),
-        elems: Number(this.n ? this.n : (this.width * this.height))
+        elems: Number(this.elems ? this.elems : (this.width * this.height))
       });
     }
   }
