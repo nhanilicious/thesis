@@ -48,7 +48,12 @@ export default {
             commit('init', rootGetters['config/config']);
         },
         calc({commit, state}) {
-            while (!state.complete) commit('calcNext');
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    while (!state.complete) commit('calcNext');
+                    resolve();
+                }, 1000)
+            })
         }
     }
 
