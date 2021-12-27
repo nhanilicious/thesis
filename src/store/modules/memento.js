@@ -8,7 +8,7 @@ export default {
     state: {
         steps: [],
         algorithm: undefined,
-        full: true,
+        complete: true,
     },
 
     getters: {
@@ -24,20 +24,20 @@ export default {
         clear(state) {
             state.algorithm = undefined;
             state.steps = [];
-            state.full = true;
+            state.complete = true;
         },
         init(state, {algorithm, width, height, elems}) {
             if (!state.last && algorithm.prototype instanceof BaseSort) {
                 state.algorithm = algorithm;
                 state.steps.push(algorithm.initStep(Grid.generateGrid(width, height, elems)));
-                state.full = false;
+                state.complete = false;
             }
         },
         calcNext(state) {
-            if (state.algorithm && state.steps.length && !state.full) {
+            if (state.algorithm && state.steps.length && !state.complete) {
                 let step = state.algorithm.nextStep(state.steps[state.steps.length - 1]);
                 if (step != null) state.steps.push(step);
-                else state.full = true;
+                else state.complete = true;
             }
         }
     },
@@ -48,7 +48,7 @@ export default {
             commit('init', rootGetters['config/config']);
         },
         calc({commit, state}) {
-            while (!state.full) commit('calcNext');
+            while (!state.complete) commit('calcNext');
         }
     }
 
