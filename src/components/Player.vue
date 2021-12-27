@@ -1,6 +1,9 @@
 <template>
   <v-container>
     <v-row>
+      <v-col></v-col>
+    </v-row>
+    <v-row>
       <v-col align="center">
         <v-btn :disabled="!enabled" @click="decrementTurn" icon>
           <v-icon>mdi-skip-previous</v-icon>
@@ -11,7 +14,15 @@
         <v-btn :disabled="!enabled" @click="incrementTurn" icon>
           <v-icon>mdi-skip-next</v-icon>
         </v-btn>
+        <br/>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col align="center" sm6>
+        <v-subheader>Steps</v-subheader>
         <v-slider :disabled="!enabled" v-model="t" step="1" min="0" :max="t_max" thumb-label ticks/>
+        <v-subheader>Speed</v-subheader>
+        <v-slider :disabled="!enabled" v-model="speed" step="1" min="1" :max="3" thumb-label ticks/>
       </v-col>
     </v-row>
   </v-container>
@@ -36,6 +47,14 @@ export default {
       },
       set(value) {
         this.$store.commit('player/setT', value);
+      }
+    },
+    speed: {
+      get() {
+        return this.$store.state.player.delta / 0.005;
+      },
+      set(value) {
+        this.$store.commit('player/setDelta', value * 0.005);
       }
     }
   },
