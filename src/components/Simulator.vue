@@ -26,17 +26,17 @@ export default {
 
   computed: {
     ...mapState({
-      t: state => state.player.t,
+      t: state => Math.floor(state.player.t),
       delta: state => state.player.t % 1
     }),
     config() {
       return this['config/config']();
     },
     currStep() {
-      return this['memento/step']()(Math.floor(this.t));
+      return this['memento/step']()(this.t);
     },
     nextStep() {
-      return this['memento/step']()(Math.floor(this.t) + 1);
+      return this['memento/step']()(this.t + 1);
     },
     stepCount() {
       return this['memento/size']();
