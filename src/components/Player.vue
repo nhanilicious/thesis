@@ -18,7 +18,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col align="center" sm6>
+      <v-col align="center">
         <v-subheader>Steps</v-subheader>
         <v-slider :disabled="!enabled" v-model="t" step="1" min="0" :max="t_max" thumb-label ticks/>
         <v-subheader>Speed</v-subheader>
@@ -30,6 +30,8 @@
 
 <script>
 import {mapState} from 'vuex'
+
+const BASE_DELTA = 0.005;
 
 export default {
 
@@ -51,10 +53,10 @@ export default {
     },
     speed: {
       get() {
-        return this.$store.state.player.delta / 0.005;
+        return Math.round(this.$store.state.player.delta / BASE_DELTA);
       },
       set(value) {
-        this.$store.commit('player/setDelta', value * 0.005);
+        this.$store.commit('player/setDelta', value * BASE_DELTA);
       }
     }
   },
