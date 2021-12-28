@@ -3,16 +3,12 @@
     <v-row>
       <v-col align="center">
         <v-form ref="form" v-model="valid">
-          <v-select v-model="algorithm" :items="algorithms" :rules="[v => !!v || 'Algorithm is required']"
-                    label="Algorithm"
-                    required/>
-          <v-text-field :disabled="!algorithm" v-model="width" :rules="widthRules" label="Width" type="number" min="1"
+          <v-select v-model="algorithm" :items="algorithms" :rules="rules.algorithm" label="Algorithm" required/>
+          <v-text-field :disabled="!algorithm" v-model="width" :rules="rules.width" label="Width" type="number" min="1"
                         required/>
-          <v-text-field :disabled="!algorithm || algorithm.dimension < 2" v-model="height" :rules="heightRules"
+          <v-text-field :disabled="!algorithm || algorithm.dimension < 2" v-model="height" :rules="rules.height"
                         label="Height" type="number" min="1" required/>
-          <v-text-field v-model="elems" :rules="[v => (!v || v > 0) || 'Number of elements must be positive']"
-                        label="Elements"
-                        type="number" min="1"/>
+          <v-text-field v-model="elems" :rules="rules.elems" label="Elements" type="number" min="1"/>
           <v-btn :disabled="!valid" @click="setConfig">Simulate</v-btn>
         </v-form>
       </v-col>
@@ -28,19 +24,30 @@ export default {
   name: "Configurator",
 
   data: () => ({
-    valid: true,
+
     algorithm: undefined,
     width: 1,
-    widthRules: [
-      v => !!v || 'Width is required',
-      v => v > 0 || 'Width must be positive'
-    ],
     height: 1,
-    heightRules: [
-      v => !!v || 'Height is required',
-      v => v > 0 || 'Height must be positive'
-    ],
-    elems: undefined
+    elems: undefined,
+
+    valid: true,
+    rules: {
+      algorithm: [
+        v => !!v || 'Algorithm is required'
+      ],
+      width: [
+        v => !!v || 'Width is required',
+        v => v > 0 || 'Width must be positive'
+      ],
+      height: [
+        v => !!v || 'Height is required',
+        v => v > 0 || 'Height must be positive'
+      ],
+      elems: [
+        v => (!v || v > 0) || 'Number of elements must be positive'
+      ]
+    }
+
   }),
 
   computed: {
