@@ -103,7 +103,7 @@ export default class Graphics3D {
         let [w, h] = [grid.width, grid.height];
 
         // node size
-        this.nodeSize = Math.min(2.0 / (2 * w - 1), 1.0 / (2 * h - 1));
+        this.nodeSize = Math.min(1.0 / (2 * w - 1), 1.0 / (2 * h - 1));
         let [s, positions] = [this.nodeSize, []];
 
         // node positions
