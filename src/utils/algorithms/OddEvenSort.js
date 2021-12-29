@@ -5,8 +5,8 @@ import Step from "@/utils/Step"
 
 export default class OddEvenSort extends BaseSort {
 
-    static get dimension() { return 1; }
-    static get name() { return "Odd Even Sort"; }
+    static dimension = 1;
+    static name = "Odd Even Sort";
 
     static initStep(grid) {
 
@@ -28,7 +28,7 @@ export default class OddEvenSort extends BaseSort {
 
                     for (let i = 0; i < w; ++i) {
                         grid.values[0][i].sort(BaseSort.numeralCompare);
-                        highlights.push(new Highlight([0,i], [0,i]));
+                        highlights.push(new Highlight([0, i], [0, i]));
                     }
 
                     return new Step(grid, [1, 0], highlights);
@@ -43,7 +43,7 @@ export default class OddEvenSort extends BaseSort {
 
                 for (let i = turn % 2; i + 1 < w; i += 2) {
 
-                    highlights.push(new Highlight([0,i], [0,i + 1]));
+                    highlights.push(new Highlight([0, i], [0, i + 1]));
 
                     let arr = grid.values[0][i].concat(grid.values[0][i + 1]);
                     arr.sort(BaseSort.numeralCompare);

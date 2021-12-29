@@ -5,8 +5,8 @@ import Step from "@/utils/Step"
 
 export default class ShearSort extends BaseSort {
 
-    static get dimension() { return 2; }
-    static get name() { return "Shear Sort"; }
+    static dimension = 2;
+    static name = "Shear Sort";
 
     static initStep(grid) {
 
