@@ -1,4 +1,5 @@
 import * as Three from 'three';
+//import {frameCorners} from "three/examples/jsm/utils/CameraUtils";
 
 const DEFAULT_NODE_COLOR = 0x333333;
 const DEFAULT_CONN_COLOR = 0x222222;
@@ -9,8 +10,8 @@ export default class Graphics3D {
     // dimensions
     canvasWidth = 0.0;
     canvasHeight = 0.0;
-    nodeSize = 0.0;
-    connSize = 0.0;
+    nodeSize = 1.0;
+    connSize = 1.0;
     elemSize = null;
 
     // coords
@@ -30,7 +31,7 @@ export default class Graphics3D {
 
         [this.canvasWidth, this.canvasHeight] = [canvasWidth, canvasHeight];
 
-        this.camera = new Three.PerspectiveCamera(50, this.canvasWidth / this.canvasHeight, 0.01, 10);
+        this.camera = new Three.PerspectiveCamera(90, this.canvasWidth / this.canvasHeight, 0.01, 100);
         this.camera.position.z = 1.5;
         this.scene = new Three.Scene();
 
@@ -107,14 +108,15 @@ export default class Graphics3D {
         let [w, h] = [grid.width, grid.height];
 
         // node size
-        this.nodeSize = Math.min(1.0 / (2 * w - 1), 1.0 / (2 * h - 1));
+        // this.nodeSize = Math.min(1.0 / (2 * w - 1), 1.0 / (2 * h - 1));
         let [s, positions] = [this.nodeSize, []];
 
         // node positions
         for (let i = 0; i < h; ++i) {
             positions.push([]);
             for (let j = 0; j < w; ++j)
-                positions[i].push([(2 * j - w + 1) * s, -(2 * i - h + 1) * s]);
+                //positions[i].push([(2 * j - w + 1) * s, -(2 * i - h + 1) * s]);
+                positions[i].push([2 * j * s, 2 * i * s]);
         }
 
         [this.nodePos, this.nodes] = [positions, []];
@@ -139,6 +141,25 @@ export default class Graphics3D {
 
             }
         }
+
+        // reposition camera
+        console.log(this.camera.position);
+        this.camera.position.x = (this.nodePos[h - 1][w - 1][0] + this.nodePos[0][0][0]) / 2;
+        this.camera.position.y = (this.nodePos[h - 1][w - 1][1] + this.nodePos[0][0][1]) / 2;
+        /*let c = Math.max(w,h) + 1.0; console.log(c);
+        let b = c / Math.tan(this.camera.fov * Math.PI / 360); console.log(b);*/
+        this.camera.position.z = 1.5 + Math.max(w,h);
+        this.camera.updateProjectionMatrix();
+        // console.log(this.camera.position);
+        /*frameCorners(this.camera,
+            new Three.Vector3(this.nodePos[h - 1][0][0], this.nodePos[h - 1][0][1], this.nodeSize / 2),
+            new Three.Vector3(this.nodePos[h - 1][w - 1][0], this.nodePos[h - 1][w - 1][1], this.nodeSize / 2),
+            new Three.Vector3(this.nodePos[0][w - 1][0], this.nodePos[0][w - 1][1], this.nodeSize / 2)
+        );
+        this.camera.rotation.x = 0.0;
+        this.camera.rotation.y = 0.0;
+        this.camera.rotation.z = 0.0;
+        this.camera.updateProjectionMatrix();*/
 
     }
 
@@ -283,8 +304,8 @@ export default class Graphics3D {
             for (let i = 0; i < h; ++i) {
                 for (let j = 0; j < w; ++j)
                     for (let k = 0; k < grid.values[i][j].length; ++k) {
-                        let s = 0.4 * this.nodeSize / Math.ceil(Math.sqrt(grid.values[i][j].length));
-                        sizes[grid.values[i][j][k] - 1] = Math.min(s, this.nodeSize * 0.25);
+                        let s = 0.8 * this.nodeSize / Math.ceil(Math.sqrt(grid.values[i][j].length));
+                        sizes[grid.values[i][j][k] - 1] = Math.min(s, this.nodeSize * 0.5);
                     }
             }
 
@@ -468,7 +489,7 @@ class Factory {
         let texture = new Three.Texture(canvas);
         texture.needsUpdate = true;
         let material = new Three.MeshBasicMaterial({map: texture});
-        let elem = new Three.Mesh(new Three.CircleGeometry(1.0, 60), material);
+        let elem = new Three.Mesh(new Three.CircleGeometry(0.5, 60), material);
 
         [elem.overdraw, [elem.position.x, elem.position.y, elem.position.z]] = [true, coords];
 
