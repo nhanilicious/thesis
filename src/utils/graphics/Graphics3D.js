@@ -122,10 +122,12 @@ export default class Graphics3D {
 
             for (let j = 0; j < w; ++j) {
 
-                let geometry = new Three.BoxGeometry(this.nodeSize, this.nodeSize, this.nodeSize / 2);
+                /*let geometry = new Three.BoxGeometry(this.nodeSize, this.nodeSize, this.nodeSize / 2);
                 let edges = new Three.EdgesGeometry(geometry);
                 let node = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x333333}));
-                [node.position.x, node.position.y] = [this.nodePos[i][j][0], this.nodePos[i][j][1]];
+                [node.position.x, node.position.y] = [this.nodePos[i][j][0], this.nodePos[i][j][1]];*/
+
+                let node = Factory.createNode(this.nodeSize, {color: 0x333333}, [this.nodePos[i][j][0], this.nodePos[i][j][1], 0]);
 
                 this.nodes[i].push(node);
                 this.scene.add(this.nodes[i][j]);
@@ -380,6 +382,22 @@ export default class Graphics3D {
 
     render() {
         this.renderer.render(this.scene, this.camera);
+    }
+
+}
+
+class Factory {
+
+    static createNode(size, params, coords) {
+
+        let geometry = new Three.BoxGeometry(size, size, size / 2);
+        let edges = new Three.EdgesGeometry(geometry);
+        let node = new Three.LineSegments(edges, new Three.LineBasicMaterial(params));
+
+        [node.position.x, node.position.y, node.position.z] = coords;
+
+        return node;
+
     }
 
 }
