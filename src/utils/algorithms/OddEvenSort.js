@@ -5,8 +5,8 @@ import Step from "@/utils/Step"
 
 export default class OddEvenSort extends BaseSort {
 
-    static dimension = 1;
-    static name = "Odd Even Sort";
+    static get dimension() { return 1; }
+    static get name() { return "Odd Even Sort"; }
 
     static initStep(grid) {
 

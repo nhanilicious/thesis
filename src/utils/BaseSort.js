@@ -1,7 +1,7 @@
 export default class BaseSort {
 
-    static dimension = -1;
-    static name = "BaseSort";
+    static get dimension() { return -1; }
+    static get name() { return "BaseSort"; }
 
     static initStep() {
 
