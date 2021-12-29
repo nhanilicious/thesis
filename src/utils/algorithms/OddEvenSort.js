@@ -10,7 +10,10 @@ export default class OddEvenSort extends BaseSort {
 
     static initStep(grid) {
 
-        return new Step(Grid.cloneDeep(grid), [0, 0]);
+        if (grid.values[0][0].length > 1)
+            return new Step(Grid.cloneDeep(grid), [0, 0]);
+        else
+            return new Step(Grid.cloneDeep(grid), [1, 0]);
 
     }
 
@@ -24,20 +27,27 @@ export default class OddEvenSort extends BaseSort {
 
             case 0:
 
-                if (grid.values[0][0].length > 1) {
-
-                    for (let i = 0; i < w; ++i) {
-                        grid.values[0][i].sort(BaseSort.numeralCompare);
-                        highlights.push(new Highlight([0, i], [0, i]));
-                    }
-
-                    return new Step(grid, [1, 0], highlights);
-
-                } else {
-
-                    return this.nextStep(new Step(grid, [1, 0]));
-
+                for (let i = 0; i < w; ++i) {
+                    grid.values[0][i].sort(BaseSort.numeralCompare);
+                    highlights.push(new Highlight([0, i], [0, i]));
                 }
+
+                return new Step(grid, [1, 0], highlights);
+
+            /*if (grid.values[0][0].length > 1) {
+
+                for (let i = 0; i < w; ++i) {
+                    grid.values[0][i].sort(BaseSort.numeralCompare);
+                    highlights.push(new Highlight([0, i], [0, i]));
+                }
+
+                return new Step(grid, [1, 0], highlights);
+
+            } else {
+
+                return this.nextStep(new Step(grid, [1, 0]));
+
+            }*/
 
             case 1:
 

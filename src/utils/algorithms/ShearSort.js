@@ -10,7 +10,10 @@ export default class ShearSort extends BaseSort {
 
     static initStep(grid) {
 
-        return new Step(Grid.cloneDeep(grid), [0, 0, 0]);
+        if (grid.values[0][0].length > 1)
+            return new Step(Grid.cloneDeep(grid), [0, 0, 0]);
+        else
+            return new Step(Grid.cloneDeep(grid), [1, 0, 0]);
 
     }
 
@@ -24,21 +27,29 @@ export default class ShearSort extends BaseSort {
 
             case 0:
 
-                if (grid.values[0][0].length > 1) {
+                for (let i = 0; i < h; ++i)
+                    for (let j = 0; j < w; ++j) {
+                        grid.values[i][j].sort(BaseSort.numeralCompare);
+                        highlights.push(new Highlight([i, j], [i, j]));
+                    }
 
-                    for (let i = 0; i < h; ++i)
-                        for (let j = 0; j < w; ++j) {
-                            grid.values[i][j].sort(BaseSort.numeralCompare);
-                            highlights.push(new Highlight([i, j], [i, j]));
-                        }
+                return new Step(grid, [1, 0, 0], highlights);
 
-                    return new Step(grid, [1, 0, 0], highlights);
+            /*if (grid.values[0][0].length > 1) {
 
-                } else {
+                for (let i = 0; i < h; ++i)
+                    for (let j = 0; j < w; ++j) {
+                        grid.values[i][j].sort(BaseSort.numeralCompare);
+                        highlights.push(new Highlight([i, j], [i, j]));
+                    }
 
-                    return this.nextStep(new Step(grid, [1, 0, 0]));
+                return new Step(grid, [1, 0, 0], highlights);
 
-                }
+            } else {
+
+                return this.nextStep(new Step(grid, [1, 0, 0]));
+
+            }*/
 
             case 1:
 
