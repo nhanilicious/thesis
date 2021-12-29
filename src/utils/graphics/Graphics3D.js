@@ -228,8 +228,9 @@ export default class Graphics3D {
             let texture = new Three.Texture(canvas);
             texture.needsUpdate = true;
             let material = new Three.MeshBasicMaterial({map: texture});
-            let elem = new Three.Mesh(new Three.CircleGeometry(this.elemSize[0][i], 20), material);
+            let elem = new Three.Mesh(new Three.CircleGeometry(1.0, 20), material);
             [elem.overdraw, elem.position.x, elem.position.y] = [true, this.elemPos[0][i][0], this.elemPos[0][i][1]];
+            elem.scale.set(this.elemSize[0][i], this.elemSize[0][i], 1.0);
 
             this.elems.push(elem);
             this.scene.add(this.elems[i]);
@@ -359,20 +360,24 @@ export default class Graphics3D {
 
         if (this.elems) {
 
-            for (let i = 0; i < this.elems.length; i++) {
+            for (let i = 0; i < this.elems.length; ++i) {
                 let [x0, y0] = [this.elemPos[0][i][0], this.elemPos[0][i][1]];
                 let [x1, y1] = [this.elemPos[1][i][0], this.elemPos[1][i][1]];
+                let [s0, s1] = [this.elemSize[0][i], this.elemSize[1][i]];
                 let delayed = delta * 2.0 - 0.5;
                 if (delayed > 1.0) {
                     this.elems[i].position.x = x1;
                     this.elems[i].position.y = y1;
+                    this.elems[i].scale.set(s1, s1, 1.0);
                 } else if (delayed > 0.0) {
-                    let [dx, dy] = [(x1 - x0) * delayed, (y1 - y0) * delayed];
+                    let [dx, dy, ds] = [(x1 - x0) * delayed, (y1 - y0) * delayed, (s1 - s0) * delayed];
                     this.elems[i].position.x = x0 + dx;
                     this.elems[i].position.y = y0 + dy;
+                    this.elems[i].scale.set(s0 + ds, s0 + ds, 1.0);
                 } else {
                     this.elems[i].position.x = x0;
                     this.elems[i].position.y = y0;
+                    this.elems[i].scale.set(s0, s0, 1.0);
                 }
             }
 
