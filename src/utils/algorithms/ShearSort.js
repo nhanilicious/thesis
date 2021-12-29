@@ -35,22 +35,6 @@ export default class ShearSort extends BaseSort {
 
                 return new Step(grid, [1, 0, 0], highlights);
 
-            /*if (grid.values[0][0].length > 1) {
-
-                for (let i = 0; i < h; ++i)
-                    for (let j = 0; j < w; ++j) {
-                        grid.values[i][j].sort(BaseSort.numeralCompare);
-                        highlights.push(new Highlight([i, j], [i, j]));
-                    }
-
-                return new Step(grid, [1, 0, 0], highlights);
-
-            } else {
-
-                return this.nextStep(new Step(grid, [1, 0, 0]));
-
-            }*/
-
             case 1:
 
                 for (let i = 0; i < h; ++i)
@@ -85,7 +69,7 @@ export default class ShearSort extends BaseSort {
                     }
 
                 if ((turn + 1) === h)
-                    if ((iter + 1) === Math.max(w, h))
+                    if ((iter + 1) === Math.min(w, h))
                         return new Step(grid, [3, 0, 0], highlights);
                     else
                         return new Step(grid, [1, iter + 1, 0], highlights);

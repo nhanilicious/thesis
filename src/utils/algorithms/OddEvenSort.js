@@ -34,21 +34,6 @@ export default class OddEvenSort extends BaseSort {
 
                 return new Step(grid, [1, 0], highlights);
 
-            /*if (grid.values[0][0].length > 1) {
-
-                for (let i = 0; i < w; ++i) {
-                    grid.values[0][i].sort(BaseSort.numeralCompare);
-                    highlights.push(new Highlight([0, i], [0, i]));
-                }
-
-                return new Step(grid, [1, 0], highlights);
-
-            } else {
-
-                return this.nextStep(new Step(grid, [1, 0]));
-
-            }*/
-
             case 1:
 
                 for (let i = turn % 2; i + 1 < w; i += 2) {

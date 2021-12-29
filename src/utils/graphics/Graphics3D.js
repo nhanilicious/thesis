@@ -1,17 +1,21 @@
 import * as Three from 'three';
 
+const DEFAULT_NODE_COLOR = 0x333333;
+const DEFAULT_CONN_COLOR = 0x222222;
+const HIGHLIGHT_COLOR = 0xffffff;
+
 export default class Graphics3D {
 
     // dimensions
     canvasWidth = 0.0;
     canvasHeight = 0.0;
     nodeSize = 0.0;
-    pipeSize = 0.0;
+    connSize = 0.0;
     elemSize = null;
 
     // coords
     nodePos = null;
-    pipePos = null;
+    connPos = null;
     elemPos = null;
 
     // objects
@@ -19,7 +23,7 @@ export default class Graphics3D {
     scene = null;
     renderer = null;
     nodes = null;
-    pipes = null;
+    conns = null;
     elems = null;
 
     constructor(canvasWidth, canvasHeight) {
@@ -57,7 +61,7 @@ export default class Graphics3D {
         if (grid) {
 
             this._initNodes(grid);
-            this._initPipes(grid);
+            this._initConns(grid);
             this._initElems(grid);
 
         }
@@ -76,12 +80,12 @@ export default class Graphics3D {
                 }
         }
 
-        if (this.pipes) {
-            for (let i = 0; i < this.pipes.length; ++i)
-                for (let j = 0; j < this.pipes[i].length; ++j)
-                    for (let k = 0; k < this.pipes[i][j].length; ++k) {
-                        this.pipes[i][j][k].geometry.dispose();
-                        this.pipes[i][j][k].material.dispose();
+        if (this.conns) {
+            for (let i = 0; i < this.conns.length; ++i)
+                for (let j = 0; j < this.conns[i].length; ++j)
+                    for (let k = 0; k < this.conns[i][j].length; ++k) {
+                        this.conns[i][j][k].geometry.dispose();
+                        this.conns[i][j][k].material.dispose();
                     }
         }
 
@@ -93,7 +97,7 @@ export default class Graphics3D {
         }
 
         this.nodes = null;
-        this.pipes = null;
+        this.conns = null;
         this.elems = null;
 
     }
@@ -127,7 +131,8 @@ export default class Graphics3D {
                 let node = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x333333}));
                 [node.position.x, node.position.y] = [this.nodePos[i][j][0], this.nodePos[i][j][1]];*/
 
-                let node = Factory.createNode(this.nodeSize, {color: 0x333333}, [this.nodePos[i][j][0], this.nodePos[i][j][1], 0]);
+                let node = Factory.createNode([this.nodePos[i][j][0], this.nodePos[i][j][1], 0]);
+                node.scale.set(this.nodeSize, this.nodeSize, this.nodeSize);
 
                 this.nodes[i].push(node);
                 this.scene.add(this.nodes[i][j]);
@@ -137,14 +142,14 @@ export default class Graphics3D {
 
     }
 
-    _initPipes(grid) {
+    _initConns(grid) {
 
         let [w, h, s, positions] = [grid.width, grid.height, this.nodeSize, [[], []]];
 
-        // pipe width
-        this.pipeSize = this.nodeSize;
+        // conn width
+        this.connSize = this.nodeSize;
 
-        // pipe positions
+        // conn positions
         for (let i = 0; i < h; ++i) {
             positions[0].push([]);
             for (let j = 0; j < w - 1; ++j)
@@ -156,44 +161,50 @@ export default class Graphics3D {
                 positions[1][i].push([this.nodePos[i][j][0], this.nodePos[i][j][1] - s]);
         }
 
-        [this.pipePos, this.pipes] = [positions, [[], []]];
+        [this.connPos, this.conns] = [positions, [[], []]];
 
-        // horizontal pipes
+        // horizontal conns
         for (let i = 0; i < h; ++i) {
 
-            this.pipes[0].push([]);
+            this.conns[0].push([]);
 
             for (let j = 0; j < w - 1; ++j) {
 
-                let geometry = new Three.BufferGeometry().setFromPoints([
+                /*let geometry = new Three.BufferGeometry().setFromPoints([
                     new Three.Vector3(-0.5 * this.nodeSize, 0, 0),
                     new Three.Vector3(0.5 * this.nodeSize, 0, 0)
                 ]);
-                let pipe = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: 0x222222}));
-                [pipe.position.x, pipe.position.y] = [this.pipePos[0][i][j][0], this.pipePos[0][i][j][1]];
+                let conn = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: DEFAULT_CONN_COLOR}));
+                [conn.position.x, conn.position.y] = [this.connPos[0][i][j][0], this.connPos[0][i][j][1]];*/
 
-                this.pipes[0][i].push(pipe);
-                this.scene.add(this.pipes[0][i][j]);
+                let conn = Factory.createHorizontalConn([this.connPos[0][i][j][0], this.connPos[0][i][j][1], 0]);
+                conn.scale.set(this.nodeSize, this.nodeSize, this.nodeSize);
+
+                this.conns[0][i].push(conn);
+                this.scene.add(this.conns[0][i][j]);
 
             }
         }
 
-        // vertical pipes
+        // vertical conns
         for (let i = 0; i < h - 1; ++i) {
 
-            this.pipes[1].push([]);
+            this.conns[1].push([]);
 
             for (let j = 0; j < w; ++j) {
 
-                let geometry = new Three.BufferGeometry().setFromPoints([
+                /*let geometry = new Three.BufferGeometry().setFromPoints([
                     new Three.Vector3(0, -0.5 * this.nodeSize, 0),
                     new Three.Vector3(0, 0.5 * this.nodeSize, 0)
                 ]);
-                let pipe = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: 0x222222}));
-                [pipe.position.x, pipe.position.y] = [this.pipePos[1][i][j][0], this.pipePos[1][i][j][1]];
+                let conn = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: DEFAULT_CONN_COLOR}));
+                [conn.position.x, conn.position.y] = [this.connPos[1][i][j][0], this.connPos[1][i][j][1]];*/
 
-                this.pipes[1][i].push(pipe);
-                this.scene.add(this.pipes[1][i][j]);
+                let conn = Factory.createVerticalConn([this.connPos[1][i][j][0], this.connPos[1][i][j][1], 0]);
+                conn.scale.set(this.nodeSize, this.nodeSize, this.nodeSize);
+
+                this.conns[1][i].push(conn);
+                this.scene.add(this.conns[1][i][j]);
 
             }
         }
@@ -211,7 +222,7 @@ export default class Graphics3D {
         // elems
         for (let i = 0; i < n; ++i) {
 
-            let canvas = document.createElement("canvas");
+            /*let canvas = document.createElement("canvas");
             [canvas.width, canvas.height] = [40, 40];
             let context = canvas.getContext("2d");
 
@@ -229,7 +240,9 @@ export default class Graphics3D {
             texture.needsUpdate = true;
             let material = new Three.MeshBasicMaterial({map: texture});
             let elem = new Three.Mesh(new Three.CircleGeometry(1.0, 20), material);
-            [elem.overdraw, elem.position.x, elem.position.y] = [true, this.elemPos[0][i][0], this.elemPos[0][i][1]];
+            [elem.overdraw, elem.position.x, elem.position.y] = [true, this.elemPos[0][i][0], this.elemPos[0][i][1]];*/
+
+            let elem = Factory.createElem(i + 1, [this.elemPos[0][i][0], this.elemPos[0][i][1], 0])
             elem.scale.set(this.elemSize[0][i], this.elemSize[0][i], 1.0);
 
             this.elems.push(elem);
@@ -320,16 +333,16 @@ export default class Graphics3D {
 
     highlight(highlights) {
 
-        if (this.nodes && this.pipes) {
+        if (this.nodes && this.conns) {
 
             for (let i = 0; i < this.nodes.length; ++i)
                 for (let j = 0; j < this.nodes[i].length; ++j)
-                    this.nodes[i][j].material.color.setHex(0x333333);
+                    this.nodes[i][j].material.color.setHex(DEFAULT_NODE_COLOR);
 
-            for (let d = 0; d < this.pipes.length; ++d)
-                for (let i = 0; i < this.pipes[d].length; ++i)
-                    for (let j = 0; j < this.pipes[d][i].length; ++j)
-                        this.pipes[d][i][j].material.color.setHex(0x222222);
+            for (let d = 0; d < this.conns.length; ++d)
+                for (let i = 0; i < this.conns[d].length; ++i)
+                    for (let j = 0; j < this.conns[d][i].length; ++j)
+                        this.conns[d][i][j].material.color.setHex(DEFAULT_CONN_COLOR);
 
             if (highlights) {
 
@@ -342,9 +355,9 @@ export default class Graphics3D {
                     for (let i = x0; i <= x1; ++i)
                         for (let j = y0; j <= y1; ++j) {
 
-                            if (j < y1) this.pipes[0][i][j].material.color.setHex(0xffffff);
-                            if (i < x1) this.pipes[1][i][j].material.color.setHex(0xffffff);
-                            this.nodes[i][j].material.color.setHex(0xffffff);
+                            if (j < y1) this.conns[0][i][j].material.color.setHex(HIGHLIGHT_COLOR);
+                            if (i < x1) this.conns[1][i][j].material.color.setHex(HIGHLIGHT_COLOR);
+                            this.nodes[i][j].material.color.setHex(HIGHLIGHT_COLOR);
 
                         }
 
@@ -361,10 +374,13 @@ export default class Graphics3D {
         if (this.elems) {
 
             for (let i = 0; i < this.elems.length; ++i) {
+
                 let [x0, y0] = [this.elemPos[0][i][0], this.elemPos[0][i][1]];
                 let [x1, y1] = [this.elemPos[1][i][0], this.elemPos[1][i][1]];
                 let [s0, s1] = [this.elemSize[0][i], this.elemSize[1][i]];
+
                 let delayed = delta * 2.0 - 0.5;
+
                 if (delayed > 1.0) {
                     this.elems[i].position.x = x1;
                     this.elems[i].position.y = y1;
@@ -379,6 +395,7 @@ export default class Graphics3D {
                     this.elems[i].position.y = y0;
                     this.elems[i].scale.set(s0, s0, 1.0);
                 }
+
             }
 
         }
@@ -393,15 +410,69 @@ export default class Graphics3D {
 
 class Factory {
 
-    static createNode(size, params, coords) {
+    static createNode(coords = [0, 0, 0]) {
 
-        let geometry = new Three.BoxGeometry(size, size, size / 2);
+        let geometry = new Three.BoxGeometry(1.0, 1.0, 0.5);
         let edges = new Three.EdgesGeometry(geometry);
-        let node = new Three.LineSegments(edges, new Three.LineBasicMaterial(params));
+        let node = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: DEFAULT_NODE_COLOR}));
 
         [node.position.x, node.position.y, node.position.z] = coords;
 
         return node;
+
+    }
+
+    static createHorizontalConn(coords = [0, 0, 0]) {
+
+        let geometry = new Three.BufferGeometry().setFromPoints([
+            new Three.Vector3(-0.5, 0, 0),
+            new Three.Vector3(0.5, 0, 0)
+        ]);
+        let conn = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: DEFAULT_CONN_COLOR}));
+
+        [conn.position.x, conn.position.y, conn.position.z] = coords;
+        return conn;
+
+    }
+
+    static createVerticalConn(coords = [0, 0, 0]) {
+
+        let geometry = new Three.BufferGeometry().setFromPoints([
+            new Three.Vector3(0, -0.5, 0),
+            new Three.Vector3(0, 0.5, 0)
+        ]);
+        let conn = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: DEFAULT_CONN_COLOR}));
+
+        [conn.position.x, conn.position.y, conn.position.z] = coords;
+
+        return conn;
+
+    }
+
+    static createElem(text, coords = [0, 0, 0]) {
+
+        let canvas = document.createElement("canvas");
+        [canvas.width, canvas.height] = [40, 40];
+        let context = canvas.getContext("2d");
+
+        context.font = "14pt Arial";
+
+        context.fillStyle = "white";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillStyle = "black";
+        context.fillText(text, canvas.width / 2, canvas.height / 2);
+
+        let texture = new Three.Texture(canvas);
+        texture.needsUpdate = true;
+        let material = new Three.MeshBasicMaterial({map: texture});
+        let elem = new Three.Mesh(new Three.CircleGeometry(1.0, 60), material);
+
+        [elem.overdraw, [elem.position.x, elem.position.y, elem.position.z]] = [true, coords];
+
+        return elem;
 
     }
 
