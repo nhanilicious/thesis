@@ -65,7 +65,7 @@ export default class ShearSort extends BaseSort {
 
                     }
 
-                if ((turn + 1) == w)
+                if ((turn + 1) === w)
                     return new Step(grid, [2, iter, 0], highlights);
                 else
                     return new Step(grid, [1, iter, turn + 1], highlights);
@@ -84,7 +84,7 @@ export default class ShearSort extends BaseSort {
 
                     }
 
-                if ((turn + 1) == h)
+                if ((turn + 1) === h)
                     if ((iter + 1) === Math.max(w, h))
                         return new Step(grid, [3, 0, 0], highlights);
                     else
