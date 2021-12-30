@@ -163,7 +163,7 @@ export default class Graphics3D {
         for (let i = 0; i < h - 1; ++i) {
             positions[1].push([]);
             for (let j = 0; j < w; ++j)
-                positions[1][i].push([this.nodePos[i][j][0], this.nodePos[i][j][1] + s]);
+                positions[1][i].push([this.nodePos[i][j][0], this.nodePos[i][j][1] - s]);
         }
 
         [this.connPos, this.conns] = [positions, [[], []]];
