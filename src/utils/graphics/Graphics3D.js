@@ -1,5 +1,4 @@
 import * as Three from 'three';
-//import {frameCorners} from "three/examples/jsm/utils/CameraUtils";
 
 const DEFAULT_NODE_COLOR = 0x333333;
 const DEFAULT_CONN_COLOR = 0x222222;
@@ -32,7 +31,6 @@ export default class Graphics3D {
         [this.canvasWidth, this.canvasHeight] = [canvasWidth, canvasHeight];
 
         this.camera = new Three.PerspectiveCamera(90, this.canvasWidth / this.canvasHeight, 0.01, 100);
-        this.camera.position.z = 1.5;
         this.scene = new Three.Scene();
 
         this.renderer = new Three.WebGLRenderer({antialias: true});
@@ -105,18 +103,13 @@ export default class Graphics3D {
 
     _initNodes(grid) {
 
-        let [w, h] = [grid.width, grid.height];
-
-        // node size
-        // this.nodeSize = Math.min(1.0 / (2 * w - 1), 1.0 / (2 * h - 1));
-        let [s, positions] = [this.nodeSize, []];
+        let [w, h, s, positions] = [grid.width, grid.height, this.nodeSize, []];
 
         // node positions
         for (let i = 0; i < h; ++i) {
             positions.push([]);
             for (let j = 0; j < w; ++j)
-                //positions[i].push([(2 * j - w + 1) * s, -(2 * i - h + 1) * s]);
-                positions[i].push([2 * j * s, 2 * i * s]);
+                positions[i].push([2 * j * s, -2 * i * s]);
         }
 
         [this.nodePos, this.nodes] = [positions, []];
@@ -128,11 +121,6 @@ export default class Graphics3D {
 
             for (let j = 0; j < w; ++j) {
 
-                /*let geometry = new Three.BoxGeometry(this.nodeSize, this.nodeSize, this.nodeSize / 2);
-                let edges = new Three.EdgesGeometry(geometry);
-                let node = new Three.LineSegments(edges, new Three.LineBasicMaterial({color: 0x333333}));
-                [node.position.x, node.position.y] = [this.nodePos[i][j][0], this.nodePos[i][j][1]];*/
-
                 let node = Factory.createNode([this.nodePos[i][j][0], this.nodePos[i][j][1], 0]);
                 node.scale.set(this.nodeSize, this.nodeSize, this.nodeSize);
 
@@ -143,23 +131,19 @@ export default class Graphics3D {
         }
 
         // reposition camera
-        console.log(this.camera.position);
         this.camera.position.x = (this.nodePos[h - 1][w - 1][0] + this.nodePos[0][0][0]) / 2;
         this.camera.position.y = (this.nodePos[h - 1][w - 1][1] + this.nodePos[0][0][1]) / 2;
-        /*let c = Math.max(w,h) + 1.0; console.log(c);
-        let b = c / Math.tan(this.camera.fov * Math.PI / 360); console.log(b);*/
-        this.camera.position.z = 1.5 + Math.max(w,h);
+        this.camera.position.z = s * 5 / 4 + Math.max(w, h);
+
+        /*let c = Math.max(w,h) + 1.0;
+        let b = c / Math.tan(this.camera.fov * Math.PI / 360);
+        this.camera.position.z = s / 2 + b */
+
+        /*[this.camera.position.x, this.camera.position.y, this.camera.position.z] = [
+            (w - 1) * s, (h - 1) * s, s / 4 + Math.max(w, h) + 1.0
+        ]*/
+
         this.camera.updateProjectionMatrix();
-        // console.log(this.camera.position);
-        /*frameCorners(this.camera,
-            new Three.Vector3(this.nodePos[h - 1][0][0], this.nodePos[h - 1][0][1], this.nodeSize / 2),
-            new Three.Vector3(this.nodePos[h - 1][w - 1][0], this.nodePos[h - 1][w - 1][1], this.nodeSize / 2),
-            new Three.Vector3(this.nodePos[0][w - 1][0], this.nodePos[0][w - 1][1], this.nodeSize / 2)
-        );
-        this.camera.rotation.x = 0.0;
-        this.camera.rotation.y = 0.0;
-        this.camera.rotation.z = 0.0;
-        this.camera.updateProjectionMatrix();*/
 
     }
 
@@ -179,7 +163,7 @@ export default class Graphics3D {
         for (let i = 0; i < h - 1; ++i) {
             positions[1].push([]);
             for (let j = 0; j < w; ++j)
-                positions[1][i].push([this.nodePos[i][j][0], this.nodePos[i][j][1] - s]);
+                positions[1][i].push([this.nodePos[i][j][0], this.nodePos[i][j][1] + s]);
         }
 
         [this.connPos, this.conns] = [positions, [[], []]];
@@ -190,13 +174,6 @@ export default class Graphics3D {
             this.conns[0].push([]);
 
             for (let j = 0; j < w - 1; ++j) {
-
-                /*let geometry = new Three.BufferGeometry().setFromPoints([
-                    new Three.Vector3(-0.5 * this.nodeSize, 0, 0),
-                    new Three.Vector3(0.5 * this.nodeSize, 0, 0)
-                ]);
-                let conn = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: DEFAULT_CONN_COLOR}));
-                [conn.position.x, conn.position.y] = [this.connPos[0][i][j][0], this.connPos[0][i][j][1]];*/
 
                 let conn = Factory.createHorizontalConn([this.connPos[0][i][j][0], this.connPos[0][i][j][1], 0]);
                 conn.scale.set(this.nodeSize, this.nodeSize, this.nodeSize);
@@ -213,13 +190,6 @@ export default class Graphics3D {
             this.conns[1].push([]);
 
             for (let j = 0; j < w; ++j) {
-
-                /*let geometry = new Three.BufferGeometry().setFromPoints([
-                    new Three.Vector3(0, -0.5 * this.nodeSize, 0),
-                    new Three.Vector3(0, 0.5 * this.nodeSize, 0)
-                ]);
-                let conn = new Three.LineSegments(geometry, new Three.LineBasicMaterial({color: DEFAULT_CONN_COLOR}));
-                [conn.position.x, conn.position.y] = [this.connPos[1][i][j][0], this.connPos[1][i][j][1]];*/
 
                 let conn = Factory.createVerticalConn([this.connPos[1][i][j][0], this.connPos[1][i][j][1], 0]);
                 conn.scale.set(this.nodeSize, this.nodeSize, this.nodeSize);
@@ -242,26 +212,6 @@ export default class Graphics3D {
 
         // elems
         for (let i = 0; i < n; ++i) {
-
-            /*let canvas = document.createElement("canvas");
-            [canvas.width, canvas.height] = [40, 40];
-            let context = canvas.getContext("2d");
-
-            context.font = "14pt Arial";
-
-            context.fillStyle = "white";
-            context.fillRect(0, 0, canvas.width, canvas.height);
-
-            context.textAlign = "center";
-            context.textBaseline = "middle";
-            context.fillStyle = "black";
-            context.fillText(i + 1, canvas.width / 2, canvas.height / 2);
-
-            let texture = new Three.Texture(canvas);
-            texture.needsUpdate = true;
-            let material = new Three.MeshBasicMaterial({map: texture});
-            let elem = new Three.Mesh(new Three.CircleGeometry(1.0, 20), material);
-            [elem.overdraw, elem.position.x, elem.position.y] = [true, this.elemPos[0][i][0], this.elemPos[0][i][1]];*/
 
             let elem = Factory.createElem(i + 1, [this.elemPos[0][i][0], this.elemPos[0][i][1], 0])
             elem.scale.set(this.elemSize[0][i], this.elemSize[0][i], 1.0);
