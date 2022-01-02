@@ -39,14 +39,17 @@ export default {
       ],
       width: [
         v => !!v || 'Width is required',
-        v => v > 0 || 'Width must be positive'
+        v => v > 0 || 'Width must be positive',
+        v => Number.isInteger(v) || 'Width must be an integer'
       ],
       height: [
         v => !!v || 'Height is required',
-        v => v > 0 || 'Height must be positive'
+        v => v > 0 || 'Height must be positive',
+        v => Number.isInteger(v) || 'Height must be an integer'
       ],
       elems: [
-        v => (!v || v > 0) || 'Number of elements must be positive'
+        v => (!v || v > 0) || 'Number of elements must be positive',
+        v => Number.isInteger(v) || 'Number of elements must be an integer'
       ]
     }
 
@@ -61,6 +64,10 @@ export default {
   watch: {
     algorithm: function (algorithm) {
       if (algorithm.dimension < 2) this.height = 1;
+    },
+    width: function (value) {
+      console.log(value);
+      console.log(this.width);
     }
   },
 
