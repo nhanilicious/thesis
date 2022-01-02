@@ -3,13 +3,15 @@
     <v-row>
       <v-col align="center">
         <v-form ref="form" v-model="valid">
-          <v-select v-model="algorithm" :items="algorithms" :rules="rules.algorithm" label="Algorithm" required/>
-          <v-text-field :disabled="!algorithm" v-model="width" :rules="rules.width" label="Width" type="number" min="1"
-                        required/>
-          <v-text-field :disabled="!algorithm || algorithm.dimension < 2" v-model="height" :rules="rules.height"
+          <v-select name="algorithm" v-model="algorithm" :items="algorithms" :rules="rules.algorithm" label="Algorithm"
+                    required/>
+          <v-text-field name="width" :disabled="!algorithm" v-model="width" :rules="rules.width" label="Width"
+                        type="number" min="1" required/>
+          <v-text-field name="height" :disabled="!algorithm || algorithm.dimension < 2" v-model="height"
+                        :rules="rules.height"
                         label="Height" type="number" min="1" required/>
-          <v-text-field v-model="elems" :rules="rules.elems" label="Elements" type="number" min="1"/>
-          <v-btn :disabled="!valid" @click="setConfig">Simulate</v-btn>
+          <v-text-field name="elems" v-model="elems" :rules="rules.elems" label="Elements" type="number" min="1"/>
+          <v-btn name="submit" :disabled="!valid" @click="setConfig">Simulate</v-btn>
         </v-form>
       </v-col>
     </v-row>

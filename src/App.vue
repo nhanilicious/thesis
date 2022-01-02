@@ -11,19 +11,19 @@
 
           <v-col cols="12" sm="2">
             <v-sheet rounded="lg">
-              <Configurator/>
+              <Configurator name="configurator"/>
             </v-sheet>
           </v-col>
 
           <v-col cols="12" sm="8">
             <v-sheet min-height="70vh" rounded="lg" class="d-flex">
-              <Simulator ref="simulator"/>
+              <Simulator name="simulator" ref="simulator"/>
             </v-sheet>
           </v-col>
 
           <v-col cols="12" sm="2">
             <v-sheet rounded="lg">
-              <Player ref="player"/>
+              <Player name="player" ref="player"/>
             </v-sheet>
           </v-col>
 

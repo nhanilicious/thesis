@@ -5,13 +5,13 @@
     </v-row>
     <v-row>
       <v-col align="center">
-        <v-btn :disabled="!enabled" @click="decrementTurn" icon>
+        <v-btn name="prev" :disabled="!enabled" @click="decrementTurn" icon>
           <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
-        <v-btn :disabled="!enabled" @click="togglePause" icon>
+        <v-btn name="play" :disabled="!enabled" @click="togglePause" icon>
           <v-icon>{{ paused ? 'mdi-play' : 'mdi-pause' }}</v-icon>
         </v-btn>
-        <v-btn :disabled="!enabled" @click="incrementTurn" icon>
+        <v-btn name="next" :disabled="!enabled" @click="incrementTurn" icon>
           <v-icon>mdi-skip-next</v-icon>
         </v-btn>
         <br/>
@@ -20,9 +20,9 @@
     <v-row>
       <v-col align="center">
         <v-subheader>Steps</v-subheader>
-        <v-slider :disabled="!enabled" v-model="t" step="1" min="0" :max="t_max" thumb-label ticks/>
+        <v-slider name="steps" :disabled="!enabled" v-model="t" step="1" min="0" :max="t_max" thumb-label ticks/>
         <v-subheader>Speed</v-subheader>
-        <v-slider :disabled="!enabled" v-model="speed" step="1" min="1" :max="3" thumb-label ticks/>
+        <v-slider name="speed" :disabled="!enabled" v-model="speed" step="1" min="1" :max="3" thumb-label ticks/>
       </v-col>
     </v-row>
   </v-container>

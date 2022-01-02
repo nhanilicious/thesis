@@ -1,7 +1,7 @@
-import BaseSort from "@/utils/BaseSort"
-import Grid from "@/utils/Grid"
-import Highlight from "@/utils/Highlight";
-import Step from "@/utils/Step"
+import BaseSort from "../BaseSort"
+import Grid from "../Grid"
+import Highlight from "../Highlight";
+import Step from "../Step"
 
 export default class ShearSort extends BaseSort {
 
