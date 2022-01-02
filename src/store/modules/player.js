@@ -38,7 +38,7 @@ export default {
             if (state.t == state.t_max) state.paused = true;
         },
         decrementTurn(state) {
-            if (state.t > 0) state.t = Math.ceil(state.t - 1);
+            if (state.t >= 1) state.t = Math.floor(state.t - 1);
         },
         setMaxTurn(state, value) {
             if (Number.isInteger(value) && value >= 0) {
