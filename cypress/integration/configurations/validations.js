@@ -82,6 +82,18 @@ describe('Input Validation', () => {
 
     })
 
+    it('Odd-even sort: floating point width', () => {
+
+        cy.get('[name=algorithm]').parent().click();
+        cy.get('.v-menu__content').contains('Odd Even Sort').click();
+
+        cy.get('[name=width]').clear().type(1.1);
+        cy.contains('integer');
+
+        cy.get('[name=submit]').should('not.be.enabled');
+
+    })
+
     it('Odd-even sort: negative number of elements', () => {
 
         cy.get('[name=algorithm]').parent().click();
@@ -89,6 +101,18 @@ describe('Input Validation', () => {
 
         cy.get('[name=elems]').clear().type(-1);
         cy.contains('must be positive');
+
+        cy.get('[name=submit]').should('not.be.enabled');
+
+    })
+
+    it('Odd-even sort: floating point number of elements', () => {
+
+        cy.get('[name=algorithm]').parent().click();
+        cy.get('.v-menu__content').contains('Odd Even Sort').click();
+
+        cy.get('[name=elems]').clear().type(1.1);
+        cy.contains('integer');
 
         cy.get('[name=submit]').should('not.be.enabled');
 
@@ -118,6 +142,18 @@ describe('Input Validation', () => {
 
     })
 
+    it('Shear sort: floating point width', () => {
+
+        cy.get('[name=algorithm]').parent().click();
+        cy.get('.v-menu__content').contains('Shear Sort').click();
+
+        cy.get('[name=width]').clear().type(1.1);
+        cy.contains('integer');
+
+        cy.get('[name=submit]').should('not.be.enabled');
+
+    })
+
     it('Shear sort: negative height', () => {
 
         cy.get('[name=algorithm]').parent().click();
@@ -142,6 +178,18 @@ describe('Input Validation', () => {
 
     })
 
+    it('Shear sort: floating point height', () => {
+
+        cy.get('[name=algorithm]').parent().click();
+        cy.get('.v-menu__content').contains('Shear Sort').click();
+
+        cy.get('[name=height]').clear().type(1.1);
+        cy.contains('integer');
+
+        cy.get('[name=submit]').should('not.be.enabled');
+
+    })
+
     it('Shear sort: negative elems', () => {
 
         cy.get('[name=algorithm]').parent().click();
@@ -149,6 +197,18 @@ describe('Input Validation', () => {
 
         cy.get('[name=elems]').clear().type(-1);
         cy.contains('must be positive');
+
+        cy.get('[name=submit]').should('not.be.enabled');
+
+    })
+
+    it('Shear sort: floating point number of elements', () => {
+
+        cy.get('[name=algorithm]').parent().click();
+        cy.get('.v-menu__content').contains('Shear Sort').click();
+
+        cy.get('[name=elems]').clear().type(1.1);
+        cy.contains('integer');
 
         cy.get('[name=submit]').should('not.be.enabled');
 

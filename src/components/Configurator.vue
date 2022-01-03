@@ -49,7 +49,7 @@ export default {
       ],
       elems: [
         v => (!v || v > 0) || 'Number of elements must be positive',
-        v => Number.isInteger(v) || 'Number of elements must be an integer'
+        v => (!v || Number.isInteger(v)) || 'Number of elements must be an integer'
       ]
     }
 
