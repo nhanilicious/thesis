@@ -19,11 +19,31 @@ describe('Navigation', () => {
         cy.wait(2000);
         cy.screenshot();
 
+        cy.get('[name=prev]').click();
+        cy.wait(2000);
+        cy.screenshot();
+
+        cy.get('[name=next]').click();
+        cy.wait(2000);
+        cy.screenshot();
+
+        cy.get('[name=next]').click();
+        cy.wait(2000);
+        cy.screenshot();
+
         cy.get('[name=steps]').parent().click('right');
         cy.wait(2000);
         cy.screenshot();
 
+        cy.get('[name=next]').click();
+        cy.wait(2000);
+        cy.screenshot();
+
         cy.get('[name=steps]').parent().click('left');
+        cy.wait(2000);
+        cy.screenshot();
+
+        cy.get('[name=prev]').click();
         cy.wait(2000);
         cy.screenshot();
 
